@@ -33,102 +33,113 @@ email_regex = re.compile(r'''(
 )''', re.VERBOSE)
 
 
-# ================ GET INPUT ================
+def init():
 
-# Get Excel file from user
-while (True):  # Loop until you get a valid Excel file
-    wb_path = input("Type path of your Excel file: ")
-    if os.path.exists(wb_path):
-        if wb_path[-5:] != ".xlsx":
-            print("ERROR: Must be a .xlsx file.")
-        else:
-            break
-    else:
-        print("ERROR: Invalid file path.")
+    # Get user input
+    wb_path = get_wb_path()
+    email_list = get_email_list()
+    sender_email = input("Enter your email address (supports gmail, outlook, hotmail, and yahoo): ")
+    password = getpass("Enter your email password: ")
 
-# Get email list from user
-while (True):  # Loop until you get a valid text file
-    email_list_file_path = input("Type path of the text file containing your email addresses: ")
-    email_list_file_path = os.path.abspath(email_list_file_path)
-    if os.path.exists(email_list_file_path):
-        if email_list_file_path[-4:] == ".txt":
-            try:
-                email_list_file = open(email_list_file_path)
-                email_list = email_list_file.readlines()
-                email_list_file.close()
+    # Send emails
+    smtp = get_smtp(sender_email)
+
+    # Connect to Server
+    session = smtplib.SMTP(smtp, 587)
+    session.ehlo()
+    session.starttls()
+
+    try:
+        session.login(sender_email, password)
+    except Exception:
+        print("ERROR: Unable to login to your email account")
+        sys.exit()
+
+    invalid_emails = []
+    message_content = "Hello,\n\n" + sender_email + " has shared this file with you.\n\n"
+
+    for email in email_list:
+        # Check the sending email is valid
+        if not email_regex.search(email):
+            invalid_emails.append(email)
+            email_list.remove(email)
+            continue
+
+        # Setup the MIME
+        message = MIMEMultipart()
+        message['From'] = sender_email
+        message['To'] = email
+        message['Subject'] = "File Share From " + sender_email
+
+        # The body and the attachments for the mail
+        message.attach(MIMEText(message_content, 'plain'))
+        attach_file = open(wb_path, 'rb')   # Open the file as binary mode
+        payload = MIMEBase('application', 'vnd.ms-excel')
+        payload.set_payload((attach_file).read())
+        attach_file.close()
+        encoders.encode_base64(payload)     # Encode the attachment
+
+        # Add payload header with filename
+        payload.add_header("Content-Disposition", "attachment", filename=os.path.basename(wb_path))
+        message.attach(payload)
+
+        # Create SMTP session for sending the email
+        text = message.as_string()
+        session.sendmail(sender_email, email, text)
+
+    session.quit()
+
+    # Print success message and list of invalid email addresses if there were any
+    print("Success!")
+    if len(invalid_emails) != 0:
+        print("The following emails were deemed invalid: ")
+        for email in invalid_emails:
+            print(email)
+
+
+def get_wb_path():
+    while (True):  # Loop until you get a valid Excel file
+        wb_path = input("Type path of your Excel file: ")
+        if os.path.exists(wb_path):
+            if wb_path[-5:] != ".xlsx":
+                print("ERROR: Must be a .xlsx file.")
+            else:
                 break
-            except Exception:
-                print("ERROR: Unable to open file.")
         else:
-            print("ERROR: Must be a .txt file.")
+            print("ERROR: Invalid file path.")
+
+    return wb_path
+
+
+def get_email_list():
+    while (True):  # Loop until you get a valid text file
+        email_list_file_path = input("Type path of the text file containing your email addresses: ")
+        email_list_file_path = os.path.abspath(email_list_file_path)
+        if os.path.exists(email_list_file_path):
+            if email_list_file_path[-4:] == ".txt":
+                try:
+                    email_list_file = open(email_list_file_path)
+                    email_list = email_list_file.readlines()
+                    email_list_file.close()
+                    break
+                except Exception:
+                    print("ERROR: Unable to open file.")
+            else:
+                print("ERROR: Must be a .txt file.")
+        else:
+            print("ERROR: Invalid file path.")
+
+    return email_list
+
+
+def get_smtp(email):
+    if email.find("gmail") != -1:
+        smtp = "smtp.gmail.com"
+    elif (email.find("outlook") != -1) or (email.find("hotmail") != -1):
+        smtp = "smtp-mail.outlook.com"
+    elif email.find("yahoo") != -1:
+        smtp = "smtp.mail.yahoo.com"
     else:
-        print("ERROR: Invalid file path.")
+        print("ERROR: Invalid email address. Must be gmail, outlook, hotmail, or yahoo.")
 
-# Get email and password of user
-sender_email = input("Enter your email address (supports gmail, outlook, hotmail, and yahoo): ")
-password = getpass("Enter your email password: ")
-
-
-# ================ SEND EMAILS ================
-
-# Determine smtp server
-if sender_email.find("gmail") != -1:
-    smtp = "smtp.gmail.com"
-elif (sender_email.find("outlook") != -1) or (sender_email.find("hotmail") != -1):
-    smtp = "smtp-mail.outlook.com"
-elif sender_email.find("yahoo") != -1:
-    smtp = "smtp.mail.yahoo.com"
-else:
-    print("ERROR: Invalid email address. Must be gmail, outlook, hotmail, or yahoo.")
-
-# Connect to Server
-session = smtplib.SMTP(smtp, 587)
-session.ehlo()
-session.starttls()
-
-try:
-    session.login(sender_email, password)
-except Exception:
-    print("ERROR: Unable to login to your email account")
-    sys.exit()
-
-invalid_emails = []
-message_content = "Hello,\n\n" + sender_email + " has shared this file with you.\n\n"
-
-for email in email_list:
-    # Check the sending email is valid
-    if not email_regex.search(email):
-        invalid_emails.append(email)
-        email_list.remove(email)
-        continue
-
-    # Setup the MIME
-    message = MIMEMultipart()
-    message['From'] = sender_email
-    message['To'] = email
-    message['Subject'] = "File Share From " + sender_email
-
-    # The body and the attachments for the mail
-    message.attach(MIMEText(message_content, 'plain'))
-    attach_file = open(wb_path, 'rb')   # Open the file as binary mode
-    payload = MIMEBase('application', 'vnd.ms-excel')
-    payload.set_payload((attach_file).read())
-    attach_file.close()
-    encoders.encode_base64(payload)     # Encode the attachment
-
-    # Add payload header with filename
-    payload.add_header("Content-Disposition", "attachment", filename=os.path.basename(wb_path))
-    message.attach(payload)
-
-    # Create SMTP session for sending the email
-    text = message.as_string()
-    session.sendmail(sender_email, email, text)
-
-session.quit()
-
-# Print success message and list of invalid email addresses if there were any
-print("Success!")
-if len(invalid_emails) != 0:
-    print("The following emails were deemed invalid: ")
-    for email in invalid_emails:
-        print(email)
+    return smtp
