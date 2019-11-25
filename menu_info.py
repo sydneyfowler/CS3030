@@ -6,9 +6,9 @@ Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
 import main
 import menus
 
-'''-- WELCOME MESSAGE --'''
+# ================ MENU MESSAGES ================
 # Prints welcome message, purpose of program
-def PrintTopMessage():
+def print_top_message():
 
     # Header/titles
     print()
@@ -30,17 +30,53 @@ def PrintTopMessage():
     print()
 
 # Prints Import Information
-def PrintImportMessage():
+def print_file_in_message():
 
     # Header
     print()
     print(" IMPORT MODULE ".center(70, "="))
     print('-' * 70)
 
-    # Insutrctions
+    # Description
     print("The import tool will allow you to select a file and convert it to")
     print("  an excel file. You can choose to import from rows, columns, or")
-    print("  enitre files from there. Fist, give the file to load (absolute or ")
-    print("  relative path). File types accepted: .csv .txt .pdf .py .rtf")
+    print("  enitre files from there.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file to load (absolute or relative path).")
+    print("    File types accepted: .csv .txt .pdf .py .rtf")
+    print()
+    print("  2st: Choose what to load from that file (a column, row, or entire file)")
+    print()
+    print("  3rd: Choose a file for the imported data")
+    print("    (append, overwrite, or create new)")
+    print('-' * 70)
+    print()
+
+# Prints Import Information
+def print_share_message():
+
+    # Header
+    print()
+    print(" SHARE (EMAIL) ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The share tool takes an excel file and sends it to a given set of")
+    print("  emails contained within a .txt document.")
+    print()
+    print("  You will need: an excel file, a .txt containing emails, an email ")
+    print("  account from which to send the excel file")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file you wish to send (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2st: Give the file with the emails you wish to send to.")
+    print("    File types accepted: .txt")
+    print()
+    print("  3rd: Give your email credentials for email to send from.")
     print('-' * 70)
     print()

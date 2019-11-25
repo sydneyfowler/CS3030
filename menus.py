@@ -8,7 +8,7 @@ import importlib
 import menu_info
 import file_in
 
-'''-- CONSTANTS --'''
+# ================ NAVIGATIONAL CONSTANTS ================
 # List of all menus
 TOP_MENU_LIST = ["Analysis", "Cleanup", "Compress", "Duplicate Removal",
                     "Email", "Export", "Import"]
@@ -16,23 +16,23 @@ ANALYSIS_MENU_LIST = []
 CLEANUP_MENU_LIST = []
 COMPRESS_MENU_LIST = []
 DUPLICATE_MENU_LIST = []
-EMIAL_MENU_LIST = []
+EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu"]
 EXPORT_MENU_LIST = []
 IMPORT_MENU_LIST = [".scv", ".txt", ".pdf", ".py", ".rtf"]
 
 
-TOP_MENU_ROUTE = ["anaysis.AnalysisMain", "cleanup.CleanupMain", "compress.CompressMain",
-                    "duplicate_removal.DuplicateMain", "share.ShareMain",
-                    "file_out.ExportMain", "file_in"]
+TOP_MENU_ROUTE = ["anaysis", "cleanup", "compress",
+                    "duplicate_removal", "share",
+                    "file_out", "file_in"]
 ANALYSIS_MENU_ROUTE = []
 CLEANUP_MENU_ROUTE = []
 COMPRESS_MENU_ROUTE = []
 DUPLICATE_MENU_ROUTE = []
-EMIAL_MENU_ROUTE = []
+EMAIL_MENU_ROUTE = ["share", "main"]
 EXPORT_MENU_ROUTE = []
 IMPORT_MENU_ROUTE = ["todo", "todo", "todo", "todo", "todo"]
 
-'''-- MENU CLASS --'''
+# ================ MENU OBJECT ================
 class Menu:
 
     # Initialization
@@ -49,7 +49,7 @@ class Menu:
     def PrintMenuMessage(self):
 
         # Display print message from the import menu_info
-        getattr(menu_info, "Print" + self.name + "Message")()
+        getattr(menu_info, "print_" + self.name + "_message")()
 
     # Gives menu for shiting menus
     def DisplayShiftMenu(self):
@@ -106,7 +106,7 @@ class Menu:
             # If input is valid, return the input value, break from error loop
             else:
                 self.selection_value = user_choice
-                self.selection_name = self.list[user_choice]
+                self.selection_name = self.route[user_choice]
                 break
 
     # Directs user to respected file
@@ -118,5 +118,12 @@ class Menu:
         # Get import from predifined routes list
         imp = importlib.import_module(self.route[self.selection_value])
 
+        # Decides to init or menu display
+        target = None
+        if (self.name == self.selection_name):
+            target = "init"
+        else:
+            target = "menu_header"
+
         # Go to routed import main
-        getattr(imp, self.selection_name + "Main")()
+        getattr(imp, target)()

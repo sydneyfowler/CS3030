@@ -7,12 +7,8 @@ import main
 import menus
 import menu_info
 
-def ImportMain():
+def menu_header():
 
     # Print Import Message Above
-    import_menu = menus.Menu("Import", menus.IMPORT_MENU_LIST, menus.IMPORT_MENU_ROUTE)
+    import_menu = menus.Menu("file_in", menus.IMPORT_MENU_LIST, menus.IMPORT_MENU_ROUTE)
     import_menu.PrintMenuMessage()
-
-    # PUT IMPORT FUNCTIONALITY HERE #
-
-    #main.MainLoop(menus.Menu(menus.IMPORT_MENU_LIST, menus.IMPORT_MENU_ROUTE), 'import')

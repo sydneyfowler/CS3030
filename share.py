@@ -4,7 +4,7 @@ Sydney Fowler and Matt Hileman
 15-12-2019
 Description: Emails a copy of the passed in file to a list of email addresses
 '''
-
+# Imports
 import os
 import sys
 import re
@@ -14,6 +14,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+
+import menus
 
 
 # ================ REFERENCES ================
@@ -33,6 +35,14 @@ email_regex = re.compile(r'''(
 )''', re.VERBOSE)
 
 
+def menu_header():
+    # Menu Object
+    share_menu = menus.Menu("share", menus.EMAIL_MENU_LIST, menus.EMAIL_MENU_ROUTE)
+    # Menu Message
+    share_menu.PrintMenuMessage()
+    # Shift Menu
+    share_menu.DisplayShiftMenu()
+
 def init():
 
     # Get user input
@@ -42,6 +52,7 @@ def init():
     password = getpass("Enter your email password: ")
 
     # Send emails
+    print("Attempting to send emails...")
     smtp = get_smtp(sender_email)
 
     # Connect to Server
@@ -52,6 +63,7 @@ def init():
     try:
         session.login(sender_email, password)
     except Exception:
+        print()
         print("ERROR: Unable to login to your email account")
         sys.exit()
 
@@ -90,6 +102,8 @@ def init():
     session.quit()
 
     # Print success message and list of invalid email addresses if there were any
+    print('-' * 40)
+    print()
     print("Success!")
     if len(invalid_emails) != 0:
         print("The following emails were deemed invalid: ")
@@ -103,10 +117,14 @@ def get_wb_path():
         if os.path.exists(wb_path):
             if wb_path[-5:] != ".xlsx":
                 print("ERROR: Must be a .xlsx file.")
+                print()
             else:
+                print('-' * 40)
+                print()
                 break
         else:
             print("ERROR: Invalid file path.")
+            print()
 
     return wb_path
 
@@ -124,11 +142,15 @@ def get_email_list():
                     break
                 except Exception:
                     print("ERROR: Unable to open file.")
+                    print()
             else:
                 print("ERROR: Must be a .txt file.")
+                print()
         else:
             print("ERROR: Invalid file path.")
-
+            print()
+    print('-' * 40)
+    print()
     return email_list
 
 
@@ -143,3 +165,6 @@ def get_smtp(email):
         print("ERROR: Invalid email address. Must be gmail, outlook, hotmail, or yahoo.")
 
     return smtp
+
+if __name__ == '__main__':
+    init()
