@@ -10,6 +10,7 @@ import os
 import sys
 import re
 import openpyxl
+import custom_dictionaries
 
 
 def init():
@@ -40,11 +41,28 @@ def get_wb_path():
 
 
 def clean_phone_number():
-    pass
+    # Setup regular expression
+    phone_regex = re.compile(r'''(
+        (\d{3}|\(\d{3}\))?                  # Area code
+        (\s|-|\.)?                          # Separator
+        \d{3}                               # First 3 digits
+        (\s|-|\.)                           # Separator
+        \d{4}                               # Last 4 digits
+        (\s*(ext|x|ext.)\s*\d{2,5})?        # Extension
+        )''', re.VERBOSE)
 
 
 def clean_email_address():
-    pass
+    # Setup regular expression
+    # Based email rules of information on this site:
+    # https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
+    email_regex = re.compile(r'''(
+        ([a-zA-Z0-9](([a-zA-Z0-9!#$%&'*+/=?^_`{|.-]){,62}[a-zA-Z0-9])?)     # Recipient name
+        (@)                                                                 # @ symbol
+        ([a-zA-Z0-9](([a-zA-Z0-9.-]){,251}[a-zA-Z0-9])?)                    # Domain name
+        (\.)                                                                # . symbol
+        (com|org|net)                                                       # Top-level domain
+        )''', re.VERBOSE)
 
 
 def clean_states():
@@ -52,11 +70,29 @@ def clean_states():
 
 
 def clean_zip_codes():
-    pass
+    zip_regex = re.compile(r'''(
+            (\d{5})                             # 5 digits
+            (-.)?                               # -
+            (\d{4})?                            # 4 digits
+            )''', re.VERBOSE)
 
 
 def clean_dates():
-    pass
+    yyyy_mm_dd = re.compile(r'''(
+                (\d{4})                         # Year
+                (-|/)                           # Separator (- or /)
+                ((1[0-2])|0[1-9])               # Month
+                (-|/)                           # Separator (- or /)
+                ((3[0-1])|0[1-9]|[1-2][0-9])    # Day
+                )''', re.VERBOSE)
+
+    mm_dd_yyyy = re.compile(r'''(
+    (([0][1-9])|([1][0-2]))                 # Month
+    (-|/)                                   # Separator (- or /)
+    (([0][1-9])|([1-2][0-9])|([3][0-1]))    # Day
+    (-|/)                                   # Separator (- or /)
+    ((\d{2})?(\d{2}))                       # Year
+    )''', re.VERBOSE)
 
 
 def clean_web_addresses():
