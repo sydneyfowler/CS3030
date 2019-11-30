@@ -13,6 +13,8 @@ import openpyxl
 import custom_dictionaries
 import pprint
 from openpyxl.utils import get_column_letter
+from datetime import datetime
+
 
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
                         "Cleanup Dates", "Cleanup Web Address", "Cleanup Social Media",
@@ -161,25 +163,29 @@ def clean_phone_number(range):
         (?P<three_digits>\d{3})                                                 # First 3 digits
         ((\s+)?(\s|-|\.)?(\s+)?)?                                               # Separator
         (?P<four_digits>\d{4})                                                  # Last 4 digits
-        (\s*(ext|x|ext.)\s*\d{2,5})?                                            # Extension
+        (\s*(ext|x|ext.)\s*(?P<ext>\d{2,5}))?                                   # Extension
         )''', re.VERBOSE)
 
     strip_none_digits = re.compile(r'(\d+)')
 
+    # Clean column
     for cell in range:
         # Skip Header Row
         if cell.row == 1:
             continue
         # Check against regex
         if phone_regex.search(str(cell.value)):
-            print(cell.value)
             match = phone_regex.search(str(cell.value))
+            phone_number = ""
             if match.group('area_code'):
                 area_code = strip_none_digits.search(match.group('area_code'))
-                cell.value = "(" + area_code.group(0) + ") " + match.group('three_digits') + "-" \
-                             + match.group('four_digits')
+                phone_number += "(" + area_code.group(0) + ") " + match.group('three_digits') + "-" \
+                                + match.group('four_digits')
             else:
-                cell.value = match.group('three_digits') + "-" + match.group('four_digits')
+                phone_number += match.group('three_digits') + "-" + match.group('four_digits')
+            if match.group('ext'):
+                phone_number += 'x' + match.group('ext')
+            cell.value = phone_number
         else:
             cell.value = ""
 
@@ -193,9 +199,10 @@ def clean_email_address(range):
         (@)                                                                 # @ symbol
         ([a-zA-Z0-9](([a-zA-Z0-9.-]){,251}[a-zA-Z0-9])?)                    # Domain name
         (\.)                                                                # . symbol
-        (com|org|net)                                                       # Top-level domain
+        (com|org|net|edu|co)                                                # Top-level domain
         )''', re.VERBOSE)
 
+    # Clean column
     for cell in range:
         # Skip Header Row
         if cell.row == 1:
@@ -209,33 +216,115 @@ def clean_email_address(range):
 
 
 def clean_states(range):
-    pass
+    # Setup regular expression
+    remove_special_characters = re.compile(r'''[,.:;=?!"*%<>\-_(){}[\]\\]''')
+
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Look for cell.value in states_lookup dictionary
+        state = ((remove_special_characters.sub("", str(cell.value))).upper()).strip()
+        if state in custom_dictionaries.states_lookup.keys():
+            cell.value = custom_dictionaries.states_lookup[state]
+        else:
+            cell.value = ""
 
 
 def clean_zip_codes(range):
     zip_regex = re.compile(r'''(
-            (\d{5})                             # 5 digits
-            (-.)?                               # -
-            (\d{4})?                            # 4 digits
+            (?P<five_digits>(\d)?(\d{4}))       # 5 digits
+            ((\s+)?(-)(\s+)?)?                  # -
+            (?P<four_digits>\d{4})?             # 4 digits
             )''', re.VERBOSE)
+
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regex
+        if zip_regex.search(str(cell.value)):
+            match = zip_regex.search(str(cell.value))
+            # Pad five digits if needed
+            number_of_zeros = 5 - len(str(match.group('five_digits')))
+            zip_code = ("0" * number_of_zeros) + match.group('five_digits')
+            if match.group('four_digits'):
+                zip_code += "-" + match.group('four_digits')
+            cell.value = zip_code
+        else:
+            cell.value = ""
 
 
 def clean_dates(range):
     yyyy_mm_dd = re.compile(r'''(
-                (\d{4})                         # Year
-                (-|/)                           # Separator (- or /)
-                ((1[0-2])|0[1-9])               # Month
-                (-|/)                           # Separator (- or /)
-                ((3[0-1])|0[1-9]|[1-2][0-9])    # Day
+                (?P<year>\d{4})                         # Year
+                (-|/|\s)                                # Separator (- or / or ' ')
+                (?P<month>(1[0-2])|[0]?[1-9])           # Month
+                (-|/|\s)                                # Separator (- or / or ' ')
+                (?P<day>(3[0-1])|[0]?[1-9]|[1-2][0-9])  # Day
                 )''', re.VERBOSE)
 
     mm_dd_yyyy = re.compile(r'''(
-    (([0][1-9])|([1][0-2]))                 # Month
-    (-|/)                                   # Separator (- or /)
-    (([0][1-9])|([1-2][0-9])|([3][0-1]))    # Day
-    (-|/)                                   # Separator (- or /)
-    ((\d{2})?(\d{2}))                       # Year
-    )''', re.VERBOSE)
+                (?P<month>([0]?[1-9])|([1][0-2]))               # Month
+                (-|/|\s)                                        # Separator (- or / or ' ')
+                (?P<day>([0]?[1-9])|([1-2][0-9])|([3][0-1]))    # Day
+                (-|/|\s)                                        # Separator (- or / or ' ')
+                (?P<year>(\d{2})?(\d{2}))                       # Year
+                )''', re.VERBOSE)
+
+    month_word = re.compile(r'''(
+                (?P<month>JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|JUNE|JULY|AUGUST
+                          |SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)                 # Month
+                (\s|\.)+                                                        # Separator
+                (?P<day>([0]?[1-9])|([1-2][0-9])|([3][0-1]))                    # Day
+                (\s|\.|,|')+                                                    # Separator
+                (?P<year>(\d{2})?(\d{2}))                                       # Year
+                )''', re.VERBOSE)
+
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regexes
+        if yyyy_mm_dd.search(str(cell.value)):
+            match = yyyy_mm_dd.search(str(cell.value))
+            day = "0" * (2 - len(match.group('day'))) + match.group('day')
+            month = "0" * (2 - len(match.group('month'))) + match.group('month')
+            cell.value = match.group('year') + "-" + month + "-" + day
+
+        elif mm_dd_yyyy.search(str(cell.value)):
+            match = mm_dd_yyyy.search(str(cell.value))
+            day = "0" * (2 - len(match.group('day'))) + match.group('day')
+            month = "0" * (2 - len(match.group('month'))) + match.group('month')
+            year = ""
+            if int(match.group('year')) < 100:
+                if int("20" + str(match.group('year'))) < (datetime.now()).year:
+                    year += "20" + str(match.group('year'))
+                else:
+                    year += "19" + str(match.group('year'))
+            else:
+                year += str(match.group('year'))
+            cell.value = year + "-" + month + "-" + day
+
+        elif month_word.search(str(cell.value).upper()):
+            match = month_word.search(str(cell.value).upper())
+            day = "0" * (2 - len(match.group('day'))) + match.group('day')
+            year = ""
+            if int(match.group('year')) < 100:
+                if int("20" + str(match.group('year'))) <= (datetime.now()).year:
+                    year += "20" + str(match.group('year'))
+                else:
+                    year += "19" + str(match.group('year'))
+            else:
+                year += str(match.group('year'))
+            month = custom_dictionaries.month_lookup[(str(match.group('month')).upper())[:3]]
+            cell.value = year + "-" + month + "-" + day
+
+        else:
+            cell.value = ""
 
 
 def clean_web_addresses(range):
