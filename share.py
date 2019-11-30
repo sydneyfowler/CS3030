@@ -137,7 +137,7 @@ def get_email_list():
             if email_list_file_path[-4:] == ".txt":
                 try:
                     email_list_file = open(email_list_file_path)
-                    email_list = email_list_file.readlines()
+                    email_list = email_list_file.read().splitlines()
                     email_list_file.close()
                     break
                 except Exception:

@@ -20,6 +20,8 @@ CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cle
                         "Cleanup Dates", "Cleanup Web Address", "Cleanup Social Media",
                         "Produce List of Unique Entries", "Check Entries Against List", "Truncate to Character Limit",
                         "Check Data Type", "No Cleaning", "Finish Sheet"]
+DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "Datetime Stamp", "Not Specified"]
+
 NO_CLEANING = CLEANUP_OPTIONS_LIST.index("No Cleaning")
 BREAK_SHEET = CLEANUP_OPTIONS_LIST.index("Finish Sheet")
 
@@ -47,7 +49,7 @@ def init():
         # Get user selections for each header in sheet
         for header in sheet_header_lookup[sheet_name]:
             print_menu(sheet_name, header)
-            user_selection = get_user_selection()
+            user_selection = get_user_selection(CLEANUP_OPTIONS_LIST)
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
             elif user_selection == NO_CLEANING:     # Check if user wants to skip this column
@@ -58,7 +60,7 @@ def init():
     # Process data
     for sheet_name in sheets:
         sheet = wb.get_sheet_by_name(sheet_name)
-        for col in range(1, sheet.max_column):
+        for col in range(1, sheet.max_column + 1):
             process_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if process_number is not None:
                 col_letter = get_column_letter(col)
@@ -95,13 +97,13 @@ def print_menu(sheet_name, header):
         print("(" + str(CLEANUP_OPTIONS_LIST.index(item)) + ") " + item)
 
 
-def get_user_selection():
+def get_user_selection(l):
     # Error checking loop - input is an integer and is a valid menu item
     while (True):
         print('-' * 40)
         print("Choice: ", end='')
 
-        # Initilize choice
+        # Initialize choice
         user_choice = input()
 
         # Error handling: makes sure input is integer, stores interger
@@ -112,16 +114,16 @@ def get_user_selection():
             # Error Message
             print()
             print(str(user_choice) + " is not a valid input (NOT AN INT)")
-            print("Choose a numeric value from the options above between (0-" + str(len(CLEANUP_OPTIONS_LIST) - 1)
+            print("Choose a numeric value from the options above between (0-" + str(len(l) - 1)
                   + ").")
             continue
 
         # Error handling: makes sure the user's choice is a valid menu option
-        if (user_choice < 0) or (user_choice >= len(CLEANUP_OPTIONS_LIST)):
+        if (user_choice < 0) or (user_choice >= len(l)):
             # Error Message
             print()
             print(str(user_choice) + " is not a valid input.")
-            print("Choose a numeric value from the options above between (0-" + str(len(CLEANUP_OPTIONS_LIST) - 1)
+            print("Choose a numeric value from the options above between (0-" + str(len(l) - 1)
                   + ").")
             continue
 
@@ -148,11 +150,62 @@ def process_column(range, process_number):
     elif process_number == 7:
         get_unique_entries(range)
     elif process_number == 8:
-        check_entries_against_list(range)
+        user_list = get_list(range[0].value)
+        check_entries_against_list(range, user_list)
     elif process_number == 9:
-        check_character_limit(range, 10)
+        limit = get_limit(range[0].value)
+        check_character_limit(range, limit)
     elif process_number == 10:
-        check_data_type(range, "int")
+        data_type = get_data_type(range[0].value)
+        check_data_type(range, data_type)
+
+
+def get_list(header):
+    while (True):  # Loop until you get a valid text file
+        print('-' * 40)
+        list_file_path = input("Type path of the text file containing the list you would like " + header
+                               + " checked against: ")
+        list_file_path = os.path.abspath(list_file_path)
+        if os.path.exists(list_file_path):
+            if list_file_path[-4:] == ".txt":
+                try:
+                    user_list_file = open(list_file_path)
+                    user_list = user_list_file.read().splitlines()
+                    user_list_file.close()
+                    break
+                except Exception:
+                    print("ERROR: Unable to open file.")
+                    print()
+            else:
+                print("ERROR: Must be a .txt file.")
+                print()
+        else:
+            print("ERROR: Invalid file path.")
+            print()
+    return user_list
+
+
+def get_limit(header):
+    while (True):  # Loop until you get a valid text file
+        print('-' * 40)
+        limit = input("Enter the character limit you would like used for " + header + ": ")
+        try:
+            limit = int(limit)
+            break
+        except Exception:
+            print("ERROR: Must be a whole number.")
+            print()
+    return limit
+
+
+def get_data_type(header):
+    print('-' * 40)
+    print("Select the data type option (0-" + str(len(DATA_TYPE_LIST) - 1) + ") you would like used for " + header)
+    print('-' * 40)
+    # Prints each item in list
+    for item in DATA_TYPE_LIST:
+        print("(" + str(DATA_TYPE_LIST.index(item)) + ") " + item)
+    return get_user_selection(DATA_TYPE_LIST)
 
 
 def clean_phone_number(range):
@@ -328,7 +381,29 @@ def clean_dates(range):
 
 
 def clean_web_addresses(range):
-    pass
+    # Setup regular expression
+    # Reference: https://www.regextester.com/93652
+    web_address_regex = re.compile(r'''(
+                        (http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?
+                        [a-z0-9]+
+                        ([\-\.]{1}[a-z0-9]+)*
+                        \.
+                        [a-z]{2,5}
+                        (:[0-9]{1,5})?
+                        (\/.*)?
+                        )''', re.VERBOSE)
+
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regex
+        if web_address_regex.search(str(cell.value)):
+            match = web_address_regex.search(str(cell.value))
+            cell.value = match.group(1)
+        else:
+            cell.value = ""
 
 
 def clean_social_media(range):
@@ -339,12 +414,30 @@ def get_unique_entries(range):
     pass
 
 
-def check_entries_against_list(range):
-    pass
+def check_entries_against_list(range, l):
+    # Convert list to uppercase so the check is case-insensitive
+    for item in l:
+        item = item.upper()
+
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Look for cell.value in user_list, if not there, remove the entry in the Excel File
+        if (str(cell.value)).upper() not in l:
+            cell.value = ""
 
 
 def check_character_limit(range, limit):
-    pass
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check if cell.value is within character limit, if not, truncate
+        if len(str(cell.value)) > limit:
+            cell.value = (str(cell.value))[:limit]
 
 
 def check_data_type(range, t):
