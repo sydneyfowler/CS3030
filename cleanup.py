@@ -8,19 +8,30 @@ to a new version of the file.
 
 import os
 import sys
-import re
+from custom_regular_expressions import strip_none_digits
+from custom_regular_expressions import remove_special_characters
+from custom_regular_expressions import phone_regex
+from custom_regular_expressions import email_regex
+from custom_regular_expressions import zip_regex
+from custom_regular_expressions import yyyy_mm_dd
+from custom_regular_expressions import mm_dd_yyyy
+from custom_regular_expressions import month_word
+from custom_regular_expressions import web_address_regex
 import openpyxl
 import custom_dictionaries
 import pprint
 from openpyxl.utils import get_column_letter
 from datetime import datetime
+from dateutil.parser import parse
+from openpyxl.styles import Font
+from copy import copy
 
 
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
                         "Cleanup Dates", "Cleanup Web Address", "Cleanup Social Media",
                         "Produce List of Unique Entries", "Check Entries Against List", "Truncate to Character Limit",
                         "Check Data Type", "No Cleaning", "Finish Sheet"]
-DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "Datetime Stamp", "Not Specified"]
+DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "Date", "Not Specified"]
 
 NO_CLEANING = CLEANUP_OPTIONS_LIST.index("No Cleaning")
 BREAK_SHEET = CLEANUP_OPTIONS_LIST.index("Finish Sheet")
@@ -64,7 +75,7 @@ def init():
             process_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if process_number is not None:
                 col_letter = get_column_letter(col)
-                process_column(sheet[col_letter],
+                process_column(wb, sheet[col_letter],
                                int(process_number))
 
     # Save to a new copy of the workbook
@@ -132,7 +143,7 @@ def get_user_selection(l):
             return user_choice
 
 
-def process_column(range, process_number):
+def process_column(wb, range, process_number):
     if process_number == 0:
         clean_phone_number(range)
     elif process_number == 1:
@@ -148,7 +159,7 @@ def process_column(range, process_number):
     elif process_number == 6:
         clean_social_media(range)
     elif process_number == 7:
-        get_unique_entries(range)
+        get_unique_entries(range, wb)
     elif process_number == 8:
         user_list = get_list(range[0].value)
         check_entries_against_list(range, user_list)
@@ -209,18 +220,6 @@ def get_data_type(header):
 
 
 def clean_phone_number(range):
-    # Setup regular expression
-    phone_regex = re.compile(r'''(
-        (?P<area_code>\d{3}|\((\s+)?\d{3}(\s+)?\)|\[(\s+)?\d{3}(\s+)?\])?       # Area code
-        ((\s+)?(\s|-|\.)?(\s+)?)?                                               # Separator
-        (?P<three_digits>\d{3})                                                 # First 3 digits
-        ((\s+)?(\s|-|\.)?(\s+)?)?                                               # Separator
-        (?P<four_digits>\d{4})                                                  # Last 4 digits
-        (\s*(ext|x|ext.)\s*(?P<ext>\d{2,5}))?                                   # Extension
-        )''', re.VERBOSE)
-
-    strip_none_digits = re.compile(r'(\d+)')
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -244,17 +243,6 @@ def clean_phone_number(range):
 
 
 def clean_email_address(range):
-    # Setup regular expression
-    # Based email rules of information on this site:
-    # https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
-    email_regex = re.compile(r'''(
-        ([a-zA-Z0-9](([a-zA-Z0-9!#$%&'*+/=?^_`{|.-]){,62}[a-zA-Z0-9])?)     # Recipient name
-        (@)                                                                 # @ symbol
-        ([a-zA-Z0-9](([a-zA-Z0-9.-]){,251}[a-zA-Z0-9])?)                    # Domain name
-        (\.)                                                                # . symbol
-        (com|org|net|edu|co)                                                # Top-level domain
-        )''', re.VERBOSE)
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -269,9 +257,6 @@ def clean_email_address(range):
 
 
 def clean_states(range):
-    # Setup regular expression
-    remove_special_characters = re.compile(r'''[,.:;=?!"*%<>\-_(){}[\]\\]''')
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -286,12 +271,6 @@ def clean_states(range):
 
 
 def clean_zip_codes(range):
-    zip_regex = re.compile(r'''(
-            (?P<five_digits>(\d)?(\d{4}))       # 5 digits
-            ((\s+)?(-)(\s+)?)?                  # -
-            (?P<four_digits>\d{4})?             # 4 digits
-            )''', re.VERBOSE)
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -311,31 +290,6 @@ def clean_zip_codes(range):
 
 
 def clean_dates(range):
-    yyyy_mm_dd = re.compile(r'''(
-                (?P<year>\d{4})                         # Year
-                (-|/|\s)                                # Separator (- or / or ' ')
-                (?P<month>(1[0-2])|[0]?[1-9])           # Month
-                (-|/|\s)                                # Separator (- or / or ' ')
-                (?P<day>(3[0-1])|[0]?[1-9]|[1-2][0-9])  # Day
-                )''', re.VERBOSE)
-
-    mm_dd_yyyy = re.compile(r'''(
-                (?P<month>([0]?[1-9])|([1][0-2]))               # Month
-                (-|/|\s)                                        # Separator (- or / or ' ')
-                (?P<day>([0]?[1-9])|([1-2][0-9])|([3][0-1]))    # Day
-                (-|/|\s)                                        # Separator (- or / or ' ')
-                (?P<year>(\d{2})?(\d{2}))                       # Year
-                )''', re.VERBOSE)
-
-    month_word = re.compile(r'''(
-                (?P<month>JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|JUNE|JULY|AUGUST
-                          |SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)                 # Month
-                (\s|\.)+                                                        # Separator
-                (?P<day>([0]?[1-9])|([1-2][0-9])|([3][0-1]))                    # Day
-                (\s|\.|,|')+                                                    # Separator
-                (?P<year>(\d{2})?(\d{2}))                                       # Year
-                )''', re.VERBOSE)
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -381,18 +335,6 @@ def clean_dates(range):
 
 
 def clean_web_addresses(range):
-    # Setup regular expression
-    # Reference: https://www.regextester.com/93652
-    web_address_regex = re.compile(r'''(
-                        (http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?
-                        [a-z0-9]+
-                        ([\-\.]{1}[a-z0-9]+)*
-                        \.
-                        [a-z]{2,5}
-                        (:[0-9]{1,5})?
-                        (\/.*)?
-                        )''', re.VERBOSE)
-
     # Clean column
     for cell in range:
         # Skip Header Row
@@ -410,8 +352,26 @@ def clean_social_media(range):
     pass
 
 
-def get_unique_entries(range):
-    pass
+def get_unique_entries(wb_range, wb):
+    entries = []
+    for cell in wb_range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check entries for cell.value (case-insensitive), if not there, add to entries
+        if cell.value:
+            s = (str(cell.value)).upper()
+            if s not in entries:
+                entries.append((str(cell.value)).upper())
+
+    # Create new sheet in Excel workbook for the entries
+    wb.create_sheet(title=wb_range[0].value)
+    sheet = wb.get_sheet_by_name(wb_range[0].value)
+    my_font = Font(bold=True)
+    sheet['A1'].font = my_font
+    sheet['A1'].value = wb_range[0].value
+    for i in range(0, len(entries)):
+        sheet.cell(row=i+2, column=1).value = entries[i].title()
 
 
 def check_entries_against_list(range, l):
@@ -441,7 +401,47 @@ def check_character_limit(range, limit):
 
 
 def check_data_type(range, t):
-    pass
+    # Clean column
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regex
+        if t == 0:                              # Whole Number
+            try:
+                int(cell.value)
+                cell.value = int(cell.value)
+            except Exception:
+                cell.value = ""
+        elif t == 1:                            # Decimal Value
+            try:
+                float(cell.value)
+                cell.value = float(cell.value)
+            except Exception:
+                cell.value = ""
+        elif t == 2:                            # Currency
+            try:
+                float(cell.value)
+                cell.value = "$" + "{:.2f}".format(round(float(cell.value), 2))
+            except Exception:
+                cell.value = ""
+        elif t == 3:                            # Text String
+            continue
+        elif t == 4:                            # Datetime Stamp
+            s = str(cell.value)
+            if yyyy_mm_dd.search(s):
+                match = yyyy_mm_dd.search(s)
+                cell.value = match.group(1)
+            elif mm_dd_yyyy.search(s):
+                match = mm_dd_yyyy.search(s)
+                cell.value = match.group(1)
+            elif month_word.search(s.upper()):
+                match = month_word.search(s.upper())
+                cell.value = (match.group(1)).title()
+            else:
+                cell.value = ""
+        elif t == 5:                            # Not Specified
+            continue
 
 
 init()
