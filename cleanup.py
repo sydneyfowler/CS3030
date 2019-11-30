@@ -17,7 +17,9 @@ from openpyxl.utils import get_column_letter
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
                         "Cleanup Dates", "Cleanup Web Address", "Cleanup Social Media",
                         "Produce List of Unique Entries", "Check Entries Against List", "Truncate to Character Limit",
-                        "Check Data Type", "Finish Sheet"]
+                        "Check Data Type", "No Cleaning", "Finish Sheet"]
+NO_CLEANING = CLEANUP_OPTIONS_LIST.index("No Cleaning")
+BREAK_SHEET = CLEANUP_OPTIONS_LIST.index("Finish Sheet")
 
 
 def init():
@@ -44,8 +46,10 @@ def init():
         for header in sheet_header_lookup[sheet_name]:
             print_menu(sheet_name, header)
             user_selection = get_user_selection()
-            if user_selection == (len(CLEANUP_OPTIONS_LIST) - 1): # Check if user wants to break out of sheet
+            if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
+            elif user_selection == NO_CLEANING:     # Check if user wants to skip this column
+                continue
             else:
                 sheet_header_lookup[sheet_name][header] = user_selection
 
@@ -55,7 +59,9 @@ def init():
         for col in range(1, sheet.max_column):
             process_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if process_number is not None:
-                process_column(sheet[get_column_letter(col)], int(process_number))
+                col_letter = get_column_letter(col)
+                process_column(sheet[col_letter],
+                               int(process_number))
 
     # Save to a new copy of the workbook
     new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
@@ -150,13 +156,32 @@ def process_column(range, process_number):
 def clean_phone_number(range):
     # Setup regular expression
     phone_regex = re.compile(r'''(
-        (\d{3}|\(\d{3}\))?                  # Area code
-        (\s|-|\.)?                          # Separator
-        \d{3}                               # First 3 digits
-        (\s|-|\.)                           # Separator
-        \d{4}                               # Last 4 digits
-        (\s*(ext|x|ext.)\s*\d{2,5})?        # Extension
+        (?P<area_code>\d{3}|\((\s+)?\d{3}(\s+)?\)|\[(\s+)?\d{3}(\s+)?\])?       # Area code
+        ((\s+)?(\s|-|\.)?(\s+)?)?                                               # Separator
+        (?P<three_digits>\d{3})                                                 # First 3 digits
+        ((\s+)?(\s|-|\.)?(\s+)?)?                                               # Separator
+        (?P<four_digits>\d{4})                                                  # Last 4 digits
+        (\s*(ext|x|ext.)\s*\d{2,5})?                                            # Extension
         )''', re.VERBOSE)
+
+    strip_none_digits = re.compile(r'(\d+)')
+
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regex
+        if phone_regex.search(str(cell.value)):
+            print(cell.value)
+            match = phone_regex.search(str(cell.value))
+            if match.group('area_code'):
+                area_code = strip_none_digits.search(match.group('area_code'))
+                cell.value = "(" + area_code.group(0) + ") " + match.group('three_digits') + "-" \
+                             + match.group('four_digits')
+            else:
+                cell.value = match.group('three_digits') + "-" + match.group('four_digits')
+        else:
+            cell.value = ""
 
 
 def clean_email_address(range):
@@ -170,6 +195,17 @@ def clean_email_address(range):
         (\.)                                                                # . symbol
         (com|org|net)                                                       # Top-level domain
         )''', re.VERBOSE)
+
+    for cell in range:
+        # Skip Header Row
+        if cell.row == 1:
+            continue
+        # Check against regex
+        if email_regex.search(str(cell.value)):
+            match = email_regex.search(str(cell.value))
+            cell.value = match.group(1)
+        else:
+            cell.value = ""
 
 
 def clean_states(range):
