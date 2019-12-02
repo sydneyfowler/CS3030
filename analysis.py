@@ -2,7 +2,8 @@
 Final Project
 Sydney Fowler and Matt Hileman
 15-12-2019
-Description: Contains all regular expressions needed for the project.
+Description: Allows the user to select from a set of analysis options for each column in their file. For each sheet
+selected, a new analysis sheet is created with the results from each analyzed column.
 '''
 
 import openpyxl
@@ -65,25 +66,25 @@ def init():
 def perform_analysis(wb, sheet_name, wb_range, analysis_number):
     if analysis_number == ANALYSIS_OPTIONS_LIST.index("Sum"):
         op = "SUM"
-        ret_val = perform_sum(wb, wb_range)
+        ret_val = perform_sum(sheet_name, wb_range)
     elif analysis_number == ANALYSIS_OPTIONS_LIST.index("Count"):
         op = "COUNT"
-        ret_val = perform_count(wb, wb_range)
+        ret_val = perform_count(sheet_name, wb_range)
     elif analysis_number == ANALYSIS_OPTIONS_LIST.index("Max"):
         op = "MAX"
-        ret_val = perform_max(wb, wb_range)
+        ret_val = perform_max(sheet_name, wb_range)
     elif analysis_number == ANALYSIS_OPTIONS_LIST.index("Min"):
         op = "MIN"
-        ret_val = perform_min(wb, wb_range)
+        ret_val = perform_min(sheet_name, wb_range)
     elif analysis_number == ANALYSIS_OPTIONS_LIST.index("Check Unique"):
         op = "UNIQUE"
-        ret_val = perform_unique(wb, wb_range)
+        ret_val = perform_unique(sheet_name, wb_range)
     elif analysis_number == ANALYSIS_OPTIONS_LIST.index("Average"):
         op = "AVERAGE"
-        ret_val = perform_average(wb, wb_range)
+        ret_val = perform_average(sheet_name, wb_range)
 
     # If analysis sheet is not created, create it
-    if not wb.get_sheet_by_name(sheet_name.upper() + " ANALYSIS"):
+    if sheet_name.upper() + " ANALYSIS" not in wb.get_sheet_names():
         wb.create_sheet(title=sheet_name.upper() + " ANALYSIS")
         sheet = wb.get_sheet_by_name(sheet_name.upper() + " ANALYSIS")
         my_font = Font(bold=True)
@@ -92,12 +93,12 @@ def perform_analysis(wb, sheet_name, wb_range, analysis_number):
 
     sheet = wb.get_sheet_by_name(sheet_name.upper() + " ANALYSIS")
     new_row = sheet.max_row + 1
-    sheet.cell(row=new_row, column=1).value = wb_range[0]
+    sheet.cell(row=new_row, column=1).value = wb_range[0].value
     sheet.cell(row=new_row, column=2).value = op
     sheet.cell(row=new_row, column=3).value = ret_val
 
 
-def perform_sum(wb, wb_range):
+def perform_sum(sheet_name, wb_range):
     ret_sum = 0
     non_float_flag = False
 
@@ -114,12 +115,12 @@ def perform_sum(wb, wb_range):
 
     # Print warning message if some of the cell values could not be summed
     if non_float_flag:
-        print("WARNING: Some cells in " + wb.get_active_sheet + ":" + wb_range[0] + " were not numerical values.")
+        print("WARNING: Some cells in " + sheet_name + ":" + wb_range[0].value + " were not numerical values.")
 
     return str(ret_sum)
 
 
-def perform_count(wb, wb_range):
+def perform_count(sheet_name, wb_range):
     ret_count = 0
 
     # Analyze column
@@ -134,7 +135,7 @@ def perform_count(wb, wb_range):
     return str(ret_count)
 
 
-def perform_max(wb, wb_range):
+def perform_max(sheet_name, wb_range):
     ret_max = 0
     non_float_flag = False
 
@@ -153,12 +154,12 @@ def perform_max(wb, wb_range):
 
     # Print warning message if some of the cell values could not be summed
     if non_float_flag:
-        print("WARNING: Some cells in " + wb.get_active_sheet + ":" + wb_range[0] + " were not numerical values.")
+        print("WARNING: Some cells in " + sheet_name + ":" + wb_range[0].value + " were not numerical values.")
 
     return str(ret_max)
 
 
-def perform_min(wb, wb_range):
+def perform_min(sheet_name, wb_range):
     ret_min = "Uninitialized"
     non_float_flag = False
 
@@ -179,12 +180,12 @@ def perform_min(wb, wb_range):
 
     # Print warning message if some of the cell values could not be summed
     if non_float_flag:
-        print("WARNING: Some cells in " + wb.get_active_sheet + ":" + wb_range[0] + " were not numerical values.")
+        print("WARNING: Some cells in " + sheet_name + ":" + wb_range[0].value + " were not numerical values.")
 
     return str(ret_min)
 
 
-def perform_unique(wb, wb_range):
+def perform_unique(sheet_name, wb_range):
     entries = []
     # Analyze column
     for cell in wb_range:
@@ -200,7 +201,7 @@ def perform_unique(wb, wb_range):
     return "True"
 
 
-def perform_average(wb, wb_range):
+def perform_average(sheet_name, wb_range):
     init_sum = 0
     init_count = 0
     non_float_flag = False
@@ -219,6 +220,12 @@ def perform_average(wb, wb_range):
 
     # Print warning message if some of the cell values could not be summed
     if non_float_flag:
-        print("WARNING: Some cells in " + wb.get_active_sheet + ":" + wb_range[0] + " were not numerical values.")
+        print("WARNING: Some cells in " + sheet_name + ":" + wb_range[0].value + " were not numerical values.")
 
-    return str(init_sum / init_count)
+    if init_count == 0:
+        return 0
+    else:
+        return str(init_sum / init_count)
+
+
+init()
