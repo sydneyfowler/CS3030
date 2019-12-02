@@ -7,7 +7,6 @@ to a new version of the file.
 '''
 
 import os
-import sys
 from custom_regular_expressions import strip_none_digits
 from custom_regular_expressions import remove_special_characters
 from custom_regular_expressions import phone_regex
@@ -19,12 +18,9 @@ from custom_regular_expressions import month_word
 from custom_regular_expressions import web_address_regex
 import openpyxl
 import custom_dictionaries
-import pprint
 from openpyxl.utils import get_column_letter
 from datetime import datetime
-from dateutil.parser import parse
 from openpyxl.styles import Font
-from copy import copy
 
 
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
@@ -59,7 +55,7 @@ def init():
 
         # Get user selections for each header in sheet
         for header in sheet_header_lookup[sheet_name]:
-            print_menu(sheet_name, header)
+            print_menu(sheet_name, header, CLEANUP_OPTIONS_LIST)
             user_selection = get_user_selection(CLEANUP_OPTIONS_LIST)
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
@@ -75,8 +71,7 @@ def init():
             process_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if process_number is not None:
                 col_letter = get_column_letter(col)
-                process_column(wb, sheet[col_letter],
-                               int(process_number))
+                process_column(wb, sheet[col_letter], int(process_number))
 
     # Save to a new copy of the workbook
     new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
@@ -97,15 +92,15 @@ def get_wb_path():
     return wb_path
 
 
-def print_menu(sheet_name, header):
+def print_menu(sheet_name, header, l):
     print('-' * 40)
     print("SHEET: " + str(sheet_name))
     print("HEADER: " + str(header))
-    print("Select an option (0-" + str(len(CLEANUP_OPTIONS_LIST) - 1) + ")")
+    print("Select an option (0-" + str(len(l) - 1) + ")")
     print('-' * 40)
     # Prints each item in list
-    for item in CLEANUP_OPTIONS_LIST:
-        print("(" + str(CLEANUP_OPTIONS_LIST.index(item)) + ") " + item)
+    for item in l:
+        print("(" + str(l.index(item)) + ") " + item)
 
 
 def get_user_selection(l):
@@ -144,29 +139,29 @@ def get_user_selection(l):
 
 
 def process_column(wb, range, process_number):
-    if process_number == 0:
+    if process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Phone Numbers"):
         clean_phone_number(range)
-    elif process_number == 1:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Email Addresses"):
         clean_email_address(range)
-    elif process_number == 2:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup States"):
         clean_states(range)
-    elif process_number == 3:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Zip Codes"):
         clean_zip_codes(range)
-    elif process_number == 4:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Dates"):
         clean_dates(range)
-    elif process_number == 5:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Web Address"):
         clean_web_addresses(range)
-    elif process_number == 6:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Social Media"):
         clean_social_media(range)
-    elif process_number == 7:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Produce List of Unique Entries"):
         get_unique_entries(range, wb)
-    elif process_number == 8:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Check Entries Against List"):
         user_list = get_list(range[0].value)
         check_entries_against_list(range, user_list)
-    elif process_number == 9:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Truncate to Character Limit"):
         limit = get_limit(range[0].value)
         check_character_limit(range, limit)
-    elif process_number == 10:
+    elif process_number == CLEANUP_OPTIONS_LIST.index("Check Data Type"):
         data_type = get_data_type(range[0].value)
         check_data_type(range, data_type)
 
@@ -442,6 +437,3 @@ def check_data_type(range, t):
                 cell.value = ""
         elif t == 5:                            # Not Specified
             continue
-
-
-init()
