@@ -20,26 +20,26 @@ import menus
 def menu_header():
 
     # Print Import Message Above
-    import_menu = menus.Menu("file_in", menus.IMPORT_MENU_LIST, menus.IMPORT_MENU_ROUTE)
+    import_menu = menus.Menu("file_out", menus.EXPORT_MENU_LIST, menus.EXPORT_MENU_ROUTE)
     import_menu.PrintMenuMessage()
     import_menu.DisplayShiftMenu()
 
 def init():
 
-    # Get input for .csv file
-    wb_path = get_directory([".csv"], "Type path of your .csv file: ")
-    wb_csv = pandas.read_csv(wb_path)
+    # Get input for excel file
+    wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
+    wb_xls = pandas.read_excel(wb_path, 'Sheet1', index_col = None)
 
-    # Get input for where to save new excel file
-    export_path = get_directory([], "Type path of your desired conversion (don't include file name): ")
-    export_path += "/" + input("Name the new file (don't need to include file type): ") + ".xlsx"
-    wb_csv.to_excel(export_path, index = False)
+    # Get input where to save export file (.csv file)
+    export_path = get_directory([], "Type path of your desired export (don't include file name): ")
+    export_path += "/" + input("Name the new file (don't need to include file type): ") + ".csv"
+    wb_xls.to_csv(export_path, encoding = 'utf-8', index = False)
 
-    # Sucess message
+    # Success message
     print("Success!\n" + wb_path + " was saved to " + export_path)
     input("Press enter to continue...")
 
-    # Display Menu Header again
+    # Display Menu Header again.
     menu_header()
 
 # Returns imported file

@@ -11,26 +11,28 @@ import file_in
 # ================ NAVIGATIONAL CONSTANTS ================
 # List of all menus
 TOP_MENU_LIST = ["Analysis", "Cleanup", "Compress", "Duplicate Removal",
-                    "Email", "Export", "Import"]
+                    "Email", "Export", "Import", "Quit"]
 ANALYSIS_MENU_LIST = []
 CLEANUP_MENU_LIST = []
 COMPRESS_MENU_LIST = []
 DUPLICATE_MENU_LIST = []
-EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu"]
-EXPORT_MENU_LIST = []
-IMPORT_MENU_LIST = [".scv", ".txt", ".pdf", ".py", ".rtf"]
+EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu", "Quit"]
+EXPORT_MENU_LIST = ["Export new file", "Back to Main Menu", "Quit"]
+IMPORT_MENU_LIST = ["Import new file", "Back to Main Menu", "Quit"]
+QUIT_LIST = ["Yes, quit the program", "No, return to main menu"]
 
 
 TOP_MENU_ROUTE = ["anaysis", "cleanup", "compress",
                     "duplicate_removal", "share",
-                    "file_out", "file_in"]
+                    "file_out", "file_in", "quit"]
 ANALYSIS_MENU_ROUTE = []
 CLEANUP_MENU_ROUTE = []
 COMPRESS_MENU_ROUTE = []
 DUPLICATE_MENU_ROUTE = []
-EMAIL_MENU_ROUTE = ["share", "main"]
-EXPORT_MENU_ROUTE = []
-IMPORT_MENU_ROUTE = ["todo", "todo", "todo", "todo", "todo"]
+EMAIL_MENU_ROUTE = ["share", "main", "quit"]
+EXPORT_MENU_ROUTE = ["file_out", "main", "quit"]
+IMPORT_MENU_ROUTE = ["file_in", "main", "quit"]
+QUIT_ROUTE = ["quit", "main"]
 
 # ================ MENU OBJECT ================
 class Menu:

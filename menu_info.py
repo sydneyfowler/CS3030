@@ -39,17 +39,38 @@ def print_file_in_message():
 
     # Description
     print("The import tool will allow you to select a file and convert it to")
-    print("  an excel file. You can choose to import from rows, columns, or")
-    print("  enitre files from there.")
+    print("  an excel file.")
     print('-' * 70)
 
     # Instructions
     print("  1st: Give the file to load (absolute or relative path).")
-    print("    File types accepted: .csv .txt .pdf .py .rtf")
+    print("    File types accepted: .csv")
     print()
     print("  2nd: Choose what to load from that file (a column, row, or entire file)")
     print()
     print("  3rd: Choose a file for the imported data")
+    print("    (append, overwrite, or create new)")
+    print('-' * 70)
+    print()
+
+# Prints Import Information
+def print_file_out_message():
+
+    # Header
+    print()
+    print(" OUTPUT MODULE ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The output tool will allow you to select an excel file and convert it")
+    print("  to an csv.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file to export (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2rd: Choose a name for the exported data file")
     print("    (append, overwrite, or create new)")
     print('-' * 70)
     print()
@@ -79,5 +100,18 @@ def print_share_message():
     print()
     print("  3rd: Give your email credentials for the email account you wish")
     print("    to send from.")
+    print('-' * 70)
+    print()
+
+# Prints Quit Message
+def print_quit_message():
+
+    # Header
+    print()
+    print(" QUIT PROGRAM ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("Are you sure you want to terminate this tool?")
     print('-' * 70)
     print()

@@ -110,6 +110,11 @@ def init():
         for email in invalid_emails:
             print(email)
 
+    input("Press enter to continue...")
+
+    # Display Menu Header again
+    menu_header()
+
 
 def get_wb_path():
     while (True):  # Loop until you get a valid Excel file
@@ -166,5 +171,6 @@ def get_smtp(email):
 
     return smtp
 
+# Debug purpose only, if running this as main.
 if __name__ == '__main__':
     init()
