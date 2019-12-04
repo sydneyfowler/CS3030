@@ -24,9 +24,9 @@ from openpyxl.styles import Font
 
 
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
-                        "Cleanup Dates", "Cleanup Web Address", "Cleanup Social Media",
-                        "Produce List of Unique Entries", "Check Entries Against List", "Truncate to Character Limit",
-                        "Check Data Type", "No Cleaning", "Finish Sheet"]
+                        "Cleanup Dates", "Cleanup Web Address", "Produce List of Unique Entries",
+                        "Check Entries Against List", "Truncate to Character Limit", "Check Data Type",
+                        "No Cleaning", "Finish Sheet"]
 DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "Date", "Not Specified"]
 
 NO_CLEANING = CLEANUP_OPTIONS_LIST.index("No Cleaning")
@@ -341,10 +341,6 @@ def clean_web_addresses(range):
             cell.value = match.group(1)
         else:
             cell.value = ""
-
-
-def clean_social_media(range):
-    pass
 
 
 def get_unique_entries(wb_range, wb):
