@@ -9,7 +9,7 @@ selected, a new analysis sheet is created with the results from each analyzed co
 import openpyxl
 from cleanup import get_user_selection
 from cleanup import print_menu
-from cleanup import get_wb_path
+from share import get_wb_path
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
 from openpyxl.styles import Alignment

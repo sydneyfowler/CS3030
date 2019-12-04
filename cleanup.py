@@ -21,6 +21,7 @@ import custom_dictionaries
 from openpyxl.utils import get_column_letter
 from datetime import datetime
 from openpyxl.styles import Font
+from share import get_wb_path
 
 
 CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cleanup States", "Cleanup Zip Codes",
@@ -76,20 +77,6 @@ def init():
     # Save to a new copy of the workbook
     new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
     wb.save(new_file)
-
-
-def get_wb_path():
-    while (True):  # Loop until you get a valid Excel file
-        wb_path = input("Type path of your Excel file: ")
-        if os.path.exists(wb_path):
-            if wb_path[-5:] != ".xlsx":
-                print("ERROR: Must be a .xlsx file.")
-            else:
-                break
-        else:
-            print("ERROR: Invalid file path.")
-
-    return wb_path
 
 
 def print_menu(sheet_name, header, l):
@@ -151,8 +138,6 @@ def process_column(wb, range, process_number):
         clean_dates(range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Web Address"):
         clean_web_addresses(range)
-    elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Social Media"):
-        clean_social_media(range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Produce List of Unique Entries"):
         get_unique_entries(range, wb)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Check Entries Against List"):
