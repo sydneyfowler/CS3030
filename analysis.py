@@ -12,6 +12,7 @@ from cleanup import print_menu
 from cleanup import get_wb_path
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
+from openpyxl.styles import Alignment
 
 ANALYSIS_OPTIONS_LIST = ["Sum", "Count", "Max", "Min", "Check Unique", "Average", "No Analysis", "Finish Sheet"]
 NO_ANALYSIS = ANALYSIS_OPTIONS_LIST.index("No Analysis")
@@ -88,8 +89,16 @@ def perform_analysis(wb, sheet_name, wb_range, analysis_number):
         wb.create_sheet(title=sheet_name.upper() + " ANALYSIS")
         sheet = wb.get_sheet_by_name(sheet_name.upper() + " ANALYSIS")
         my_font = Font(bold=True)
+        sheet.merge_cells('A1:C1')
         sheet['A1'].font = my_font
         sheet['A1'].value = "ANALYSIS SUMMARY"
+        sheet['A1'].alignment = Alignment(horizontal='center')
+        sheet['A2'].font = my_font
+        sheet['A2'].value = "Column"
+        sheet['B2'].font = my_font
+        sheet['B2'].value = "Operation"
+        sheet['C2'].font = my_font
+        sheet['C2'].value = "Result"
 
     sheet = wb.get_sheet_by_name(sheet_name.upper() + " ANALYSIS")
     new_row = sheet.max_row + 1
@@ -117,7 +126,10 @@ def perform_sum(sheet_name, wb_range):
     if non_float_flag:
         print("WARNING: Some cells in " + sheet_name + ":" + wb_range[0].value + " were not numerical values.")
 
-    return str(ret_sum)
+    if ret_sum == 0:
+        return("N/A")
+    else:
+        return str(ret_sum)
 
 
 def perform_count(sheet_name, wb_range):
@@ -136,7 +148,7 @@ def perform_count(sheet_name, wb_range):
 
 
 def perform_max(sheet_name, wb_range):
-    ret_max = 0
+    ret_max = "N/A"
     non_float_flag = False
 
     # Analyze column
@@ -147,7 +159,9 @@ def perform_max(sheet_name, wb_range):
         # Perform op
         try:
             num = float(cell.value)
-            if num > ret_max:
+            if ret_min == "N/A":
+                ret_min = num
+            elif num > ret_max:
                 ret_max = num
         except Exception:
             non_float_flag = True
@@ -160,7 +174,7 @@ def perform_max(sheet_name, wb_range):
 
 
 def perform_min(sheet_name, wb_range):
-    ret_min = "Uninitialized"
+    ret_min = "N/A"
     non_float_flag = False
 
     # Analyze column
@@ -171,7 +185,7 @@ def perform_min(sheet_name, wb_range):
         # Perform op
         try:
             num = float(cell.value)
-            if ret_min == "Uninitialized":
+            if ret_min == "N/A":
                 ret_min = num
             elif num < ret_min:
                 ret_min = num
@@ -225,7 +239,4 @@ def perform_average(sheet_name, wb_range):
     if init_count == 0:
         return 0
     else:
-        return str(init_sum / init_count)
-
-
-init()
+        return str(round(init_sum / init_count, 2))
