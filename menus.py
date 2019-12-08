@@ -5,17 +5,20 @@ Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
 """
 import os
 import importlib
+
 import menu_info
-import file_in
+
+# ================ REFERENCES ================
+# IMPORTLIB (needed import)
 
 # ================ NAVIGATIONAL CONSTANTS ================
 # List of all menus
 TOP_MENU_LIST = ["Analysis", "Cleanup", "Compress", "Duplicate Removal",
                     "Email", "Export", "Import", "Quit"]
 ANALYSIS_MENU_LIST = []
-CLEANUP_MENU_LIST = []
+CLEANUP_MENU_LIST = ["Clean new file", "Back to Main Menu", "Quit"]
 COMPRESS_MENU_LIST = []
-DUPLICATE_MENU_LIST = []
+DUPLICATE_MENU_LIST = ["Remove duplicate from new file", "Back to Main Menu", "Quit"]
 EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu", "Quit"]
 EXPORT_MENU_LIST = ["Export new file", "Back to Main Menu", "Quit"]
 IMPORT_MENU_LIST = ["Import new file", "Back to Main Menu", "Quit"]
@@ -26,9 +29,9 @@ TOP_MENU_ROUTE = ["anaysis", "cleanup", "compress",
                     "duplicate_removal", "share",
                     "file_out", "file_in", "quit"]
 ANALYSIS_MENU_ROUTE = []
-CLEANUP_MENU_ROUTE = []
+CLEANUP_MENU_ROUTE = ["cleanup", "main", "quit"]
 COMPRESS_MENU_ROUTE = []
-DUPLICATE_MENU_ROUTE = []
+DUPLICATE_MENU_ROUTE = ["duplicate_removal", "main", "quit"]
 EMAIL_MENU_ROUTE = ["share", "main", "quit"]
 EXPORT_MENU_ROUTE = ["file_out", "main", "quit"]
 IMPORT_MENU_ROUTE = ["file_in", "main", "quit"]
@@ -69,7 +72,7 @@ class Menu:
         print('-' * 40)
         # Prints each item in list
         for item in self.list:
-            print("(" + str(self.list.index(item)) + ") " + item)
+            print("(" + str(self.list.index(item)) + ") " + str(item))
 
 
     # Gets input for menu selection and validates
@@ -129,3 +132,69 @@ class Menu:
 
         # Go to routed import main
         getattr(imp, target)()
+
+class Function_Menu(Menu):
+
+    # Initialization
+    def __init__(self, name, list, route):
+        super().__init__(name, list, route)
+
+    # Gives menu for shiting menus
+    def DisplayShiftMenu(self, *args):
+
+        # Prints menu list
+        self.PrintMenuList()
+        # Gets selection from user, stores if valid
+        self.GetUserSelection()
+        # Routes to new file
+        self.RouteMenu(args)
+
+    # Prints menu options for user
+    def PrintMenuMessage(self):
+        pass
+
+    # Directs user to respected file
+    def RouteMenu(self, args):
+
+        # Clears the screen (checks os and uses command for that system)
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        imp = importlib.import_module(self.name)
+
+        # Target is the selection user chose
+        target = self.selection_name
+
+        # Go to routed function
+        getattr(imp, target)(args)
+
+class Value_Menu(Menu):
+
+    # Initialization
+    def __init__(self, name, list, route):
+        super().__init__(name, list, route)
+
+    # Prints menu options for user
+    def PrintMenuMessage(self):
+        pass
+
+    # Gives menu for shiting menus
+    def DisplayShiftMenu(self):
+
+        # Prints menu list
+        self.PrintMenuList()
+        # Gets selection from user, stores if valid
+        self.GetUserSelection()
+        # Routes selection value
+        return self.RouteMenu()
+
+    # Directs user to respected file
+    def RouteMenu(self):
+
+        # Clears the screen (checks os and uses command for that system)
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        # Target is the selection user chose
+        value = self.selection_name
+
+        # Return value
+        return value

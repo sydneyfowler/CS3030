@@ -1,14 +1,14 @@
 """
-(Application Name)
+Import (file_in)
 Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
-(Program Description)
+Description: Converts a .csv to .xlsx
 """
 
 import os
 import sys
-import re
 import pandas
 
+from excel_funcs import get_directory
 import menus
 
 
@@ -31,47 +31,13 @@ def init():
     wb_csv = pandas.read_csv(wb_path)
 
     # Get input for where to save new excel file
-    export_path = get_directory([], "Type path of your desired conversion (don't include file name): ")
-    export_path += "/" + input("Name the new file (don't need to include file type): ") + ".xlsx"
+    export_path = os.path.dirname(os.path.abspath(wb_path))
+    export_path += "/" + input("Input new file's name (saves to same directory): ") + ".xlsx"
     wb_csv.to_excel(export_path, index = False)
 
     # Sucess message
-    print("Success!\n" + wb_path + " was saved to " + export_path)
+    print("Done! New file saved to " + export_path)
     input("Press enter to continue...")
 
     # Display Menu Header again
     menu_header()
-
-# Returns imported file
-def get_directory(type_array, message):
-
-    error_found = 0
-    while (True):
-
-        # Import path input
-        file_path = input(message)
-
-        # Check that file exists
-        if os.path.exists(file_path):
-            for type in type_array:
-                # Checks for correct file type
-                if ( (file_path[-len(type):] != type) ):
-                    error_found = 1
-                else:
-                    error_found = 0
-
-            if (error_found):
-                print("ERROR: Invalid file TYPE. Must be " + str(type_array))
-                print()
-                continue
-            else:
-                print('-' * 40)
-                print()
-                break
-
-        else:
-            print("ERROR: Invalid file PATH.")
-            print()
-            continue
-
-    return file_path

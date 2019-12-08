@@ -34,7 +34,7 @@ def print_file_in_message():
 
     # Header
     print()
-    print(" IMPORT MODULE ".center(70, "="))
+    print(" IMPORT TOOL ".center(70, "="))
     print('-' * 70)
 
     # Description
@@ -58,7 +58,7 @@ def print_file_out_message():
 
     # Header
     print()
-    print(" OUTPUT MODULE ".center(70, "="))
+    print(" OUTPUT TOOL ".center(70, "="))
     print('-' * 70)
 
     # Description
@@ -80,7 +80,7 @@ def print_share_message():
 
     # Header
     print()
-    print(" SHARE (EMAIL) ".center(70, "="))
+    print(" SHARE (EMAIL) TOOL ".center(70, "="))
     print('-' * 70)
 
     # Description
@@ -108,7 +108,57 @@ def print_quit_message():
 
     # Header
     print()
-    print(" QUIT PROGRAM ".center(70, "="))
+    print(" CLEANUP FILE TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The cleanup tool takes an excel file and cleans it based on a list of")
+    print("  options.")
+    print()
+    print("  You will need: an excel file and path to that excel file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file you wish to cleanup (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2nd: Choose a column or row to cleanup.")
+    print()
+    print("  3rd: Choose an option to clean that selected row.")
+    print('-' * 70)
+    print()
+
+# Prints Dluplicate Removal Message
+def print_duplicate_removal_message():
+
+    # Header
+    print()
+    print(" DUPLICATE REMOVAL TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The duplicate removal tool takes an excel file and removes extra rows/columns, ")
+    print("  or duplicate items in rows/columns.")
+    print()
+    print("  You will need: an excel file and path to that excel file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file you wish to remove duplicates (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2nd: Choose to cleanup rows, columns, a column, or row to remove duplicates.")
+    print()
+    print("  3rd: Output file will automatically save.")
+    print('-' * 70)
+    print()
+
+# Prints Quit Message
+def print_quit_message():
+
+    # Header
+    print()
+    print(" QUIT MODULE ".center(70, "="))
     print('-' * 70)
 
     # Description
