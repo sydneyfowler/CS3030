@@ -86,11 +86,11 @@ class Menu:
     def get_user_selection(self):
 
         # Error checking loop - input is an integer and is a valid menu item
-        while (True):
+        while True:
             print('-' * 40)
             print("Choice: ", end = '')
 
-            # Initilize choice
+            # Initialize choice
             user_choice = input()
 
             # Error handling: makes sure input is integer, stores interger
@@ -132,7 +132,7 @@ class Menu:
 
         # Decides to init or menu display
         target = None
-        if (self.name == self.selection_name):
+        if self.name == self.selection_name:
             target = "init"
         else:
             target = "menu_header"

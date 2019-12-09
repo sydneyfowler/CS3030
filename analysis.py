@@ -69,7 +69,7 @@ def init():
 
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
-            elif user_selection == NO_CLEANING:     # Check if user wants to skip this column
+            elif user_selection == NO_ANALYSIS:     # Check if user wants to skip this column
                 continue
             else:
                 sheet_header_lookup[sheet_name][header] = user_selection
@@ -86,7 +86,7 @@ def init():
                 perform_analysis(wb, sheet_name, sheet[col_letter], int(analysis_number))
 
     # Save new file
-    if (change_file_flag):
+    if change_file_flag:
         save_file(wb, wb_path, ".xlsx")
     else:
         print()
