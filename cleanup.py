@@ -43,8 +43,8 @@ CLEANUP_OPTIONS_LIST = ["Cleanup Phone Numbers", "Cleanup Email Addresses", "Cle
                         "No Cleaning", "Finish Sheet"]
 DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "Date", "Not Specified"]
 
-NO_CLEANING = "No Cleaning"
-BREAK_SHEET = "Finish Sheet"
+NO_CLEANING = CLEANUP_OPTIONS_LIST.index("No Cleaning")
+BREAK_SHEET = CLEANUP_OPTIONS_LIST.index("Finish Sheet")
 
 
 def menu_header():
@@ -84,7 +84,7 @@ def init():
             print('-' * 40)
             print("SHEET: " + str(sheet_name))
             print("HEADER: " + str(header))
-            user_selection = cleanup_menu.display_shift_menu()
+            user_selection = CLEANUP_OPTIONS_LIST.index(cleanup_menu.display_shift_menu())
 
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
