@@ -5,9 +5,12 @@ Sydney Fowler and Matthew Hileman
 Description: Removes duplicates from rows, columns, or entire sheets.
 '''
 
+<<<<<<< HEAD
 # ================ REFERENCES ================
 # OPENPYXL - needed import
 
+=======
+>>>>>>> master
 # ================ IMPORTS ================
 # System
 import os
@@ -22,6 +25,12 @@ import main
 
 # Exterior
 import openpyxl
+<<<<<<< HEAD
+=======
+
+# ================ REFERENCES ================
+# OPENPYXL - needed import
+>>>>>>> master
 
 # ================== SETUP ===================
 def menu_header():
