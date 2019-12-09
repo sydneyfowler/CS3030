@@ -58,13 +58,13 @@ def init():
     # Get workbook
     wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
     wb = openpyxl.load_workbook(wb_path)
-    sheets = wb.sheetnames      # Edited depreciated function: "wb.get_sheet_names()"
+    sheets = wb.get_sheet_names()
 
     # Initialize 2D dictionary representing each sheet and its column headers
     sheet_header_lookup = {}
     for sheet_name in sheets:
         sheet_header_lookup.setdefault(sheet_name, {})
-        sheet = wb[sheet_name]      # Edited depreciated function: "web.get_sheet_by_name()"
+        sheet = wb.get_sheet_by_name(sheet_name)
         for cell in sheet[1]:
             sheet_header_lookup[sheet_name].setdefault(cell.value, None)
 
@@ -75,17 +75,10 @@ def init():
         if process_sheet not in ("yes", "Yes", "Y", "y"):
             continue
 
-        # Menu object used below
-        cleanup_menu = menus.Value_Menu("cleanup", CLEANUP_OPTIONS_LIST, CLEANUP_OPTIONS_LIST)
-
         # Get user selections for each header in sheet
         for header in sheet_header_lookup[sheet_name]:
-
-            print('-' * 40)
-            print("SHEET: " + str(sheet_name))
-            print("HEADER: " + str(header))
-            user_selection = CLEANUP_OPTIONS_LIST.index(cleanup_menu.display_shift_menu())
-
+            print_menu(sheet_name, header, CLEANUP_OPTIONS_LIST)
+            user_selection = get_user_selection(CLEANUP_OPTIONS_LIST)
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
             elif user_selection == NO_CLEANING:     # Check if user wants to skip this column
@@ -94,31 +87,66 @@ def init():
                 sheet_header_lookup[sheet_name][header] = user_selection
 
     # Process data
-    change_file_flag = 0
     for sheet_name in sheets:
-        sheet = wb[sheet_name]      # Edited depreciated function: "web.get_sheet_by_name()"
+        sheet = wb.get_sheet_by_name(sheet_name)
         for col in range(1, sheet.max_column + 1):
             process_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if process_number is not None:
-                change_file_flag = 1
                 col_letter = get_column_letter(col)
                 process_column(wb, sheet[col_letter], int(process_number))
 
-    # Save new file
-    if change_file_flag:
-        save_file(wb, wb_path, ".xlsx")
-    else:
-        print()
-        print("File not changed, no need to save new version.")
-        input("Press enter to continue...")
-
-    # Loop back to top menu
-    menu_header()
+    # Save to a new copy of the workbook
+    new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
+    wb.save(new_file)
 
 
-# Processes column
-def process_column(wb, wb_range, process_number):
+def print_menu(sheet_name, header, l):
+    print('-' * 40)
+    print("SHEET: " + str(sheet_name))
+    print("HEADER: " + str(header))
+    print("Select an option (0-" + str(len(l) - 1) + ")")
+    print('-' * 40)
+    # Prints each item in list
+    for item in l:
+        print("(" + str(l.index(item)) + ") " + item)
 
+
+def get_user_selection(l):
+    # Error checking loop - input is an integer and is a valid menu item
+    while (True):
+        print('-' * 40)
+        print("Choice: ", end='')
+
+        # Initialize choice
+        user_choice = input()
+
+        # Error handling: makes sure input is integer, stores interger
+        try:
+            user_choice = int(user_choice)
+        # If input is not an integer, display error, has user try again.
+        except ValueError:
+            # Error Message
+            print()
+            print(str(user_choice) + " is not a valid input (NOT AN INT)")
+            print("Choose a numeric value from the options above between (0-" + str(len(l) - 1)
+                  + ").")
+            continue
+
+        # Error handling: makes sure the user's choice is a valid menu option
+        if (user_choice < 0) or (user_choice >= len(l)):
+            # Error Message
+            print()
+            print(str(user_choice) + " is not a valid input.")
+            print("Choose a numeric value from the options above between (0-" + str(len(l) - 1)
+                  + ").")
+            continue
+
+        # If input is valid, return the input value, break from error loop
+        else:
+            return user_choice
+
+
+def process_column(wb, range, process_number):
     if process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Phone Numbers"):
         clean_phone_number(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Email Addresses"):
@@ -335,8 +363,7 @@ def get_unique_entries(wb_range, wb):
 
     # Create new sheet in Excel workbook for the entries
     wb.create_sheet(title=wb_range[0].value)
-
-    sheet = wb[wb_range[0].value]      # Edited depreciated function: "web.get_sheet_by_name()"
+    sheet = wb.get_sheet_by_name(wb_range[0].value)
     my_font = Font(bold=True)
     sheet['A1'].font = my_font
     sheet['A1'].value = wb_range[0].value
