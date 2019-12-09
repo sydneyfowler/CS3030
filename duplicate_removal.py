@@ -2,7 +2,7 @@
 duplicate_removal.py (Excel Command Line Tool)
 Sydney Fowler and Matthew Hileman
 15 December 2019
-Description: Removes duplicates from rows, columns, or entire sheets.
+Description: Removes duplicate data from rows, columns, or entire sheets.
 '''
 
 # ================ REFERENCES ================
