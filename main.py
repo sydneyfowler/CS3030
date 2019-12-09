@@ -16,6 +16,7 @@ def menu_header():
     main_menu.print_menu_message()
     main_menu.display_shift_menu()
 
+
 # If being run as main, display top menu
 if __name__ == '__main__':
     menu_header()

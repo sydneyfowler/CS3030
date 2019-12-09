@@ -28,6 +28,7 @@ def menu_header():
     import_menu.PrintMenuMessage()
     import_menu.DisplayShiftMenu()
 
+
 def init():
 
     # Get input for .csv file

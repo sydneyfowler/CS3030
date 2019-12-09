@@ -21,7 +21,7 @@ import importlib
 # ================ NAVIGATIONAL CONSTANTS ================
 # List of all menus
 TOP_MENU_LIST = ["Analysis", "Cleanup", "Compress", "Duplicate Removal",
-                    "Email", "Export", "Import", "Quit"]
+                 "Email", "Export", "Import", "Quit"]
 ANALYSIS_MENU_LIST = ["Analyze new file", "Back to Main Menu", "Quit"]
 CLEANUP_MENU_LIST = ["Clean new file", "Back to Main Menu", "Quit"]
 COMPRESS_MENU_LIST = ["Compress new file", "Back to Main Menu", "Quit"]
@@ -34,8 +34,8 @@ QUIT_LIST = ["Yes, quit the program", "No, return to main menu"]
 
 # Routes that each list item will flow to (file name)
 TOP_MENU_ROUTE = ["analysis", "cleanup", "compress",
-                    "duplicate_removal", "share",
-                    "file_out", "file_in", "quit"]
+                  "duplicate_removal", "share",
+                  "file_out", "file_in", "quit"]
 ANALYSIS_MENU_ROUTE = ["analysis", "main", "quit"]
 CLEANUP_MENU_ROUTE = ["cleanup", "main", "quit"]
 COMPRESS_MENU_ROUTE = ["compress", "main", "quit"]
@@ -81,7 +81,6 @@ class Menu:
         # Prints each item in list
         for item in self.list:
             print("(" + str(self.list.index(item)) + ") " + str(item))
-
 
     # Gets input for menu selection and validates
     def get_user_selection(self):
@@ -141,6 +140,7 @@ class Menu:
         # Go to routed import main
         getattr(imp, target)()
 
+
 class Function_Menu(Menu):
 
     # Initialization
@@ -174,6 +174,7 @@ class Function_Menu(Menu):
 
         # Go to routed function
         getattr(imp, target)(args)
+
 
 class Value_Menu(Menu):
 

@@ -46,6 +46,7 @@ def menu_header():
     share_menu.PrintMenuMessage()
     share_menu.DisplayShiftMenu()
 
+
 def init():
     # Get user input\
     wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
@@ -154,6 +155,7 @@ def get_smtp(email):
         print("ERROR: Invalid email address. Must be gmail, outlook, hotmail, or yahoo.")
 
     return smtp
+
 
 # Debug purpose only, if running this as main.
 if __name__ == '__main__':

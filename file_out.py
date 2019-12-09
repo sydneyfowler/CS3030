@@ -28,6 +28,7 @@ def menu_header():
     output_menu.PrintMenuMessage()
     output_menu.DisplayShiftMenu()
 
+
 def init():
 
     # Get input for excel file

@@ -31,6 +31,7 @@ def menu_header():
     duplicate_main_menu.print_menu_message()
     duplicate_main_menu.display_shift_menu()
 
+
 def init():
 
     # Get user input for excel file
@@ -50,6 +51,7 @@ def init():
 
     # Loop back to top menu
     menu_header()
+
 
 # Removes duplicates from all sheets
 def remove_duplicate_all_sheet(wb, wb_path):
@@ -98,6 +100,7 @@ def remove_duplicate_all_sheet(wb, wb_path):
     else:
         save_file(wb, wb_path, ".xlsx")
 
+
 # If user chooses to remove duplicates from a single sheet
 def single_sheet(wb, wb_path):
 
@@ -110,6 +113,7 @@ def single_sheet(wb, wb_path):
     # Removal menu, select to remove by a certain row or column
     removal_menu = menus.Function_Menu("duplicate_removal", REMOVAL_MENU_LIST, REMOVAL_MENU_ROUTE)
     removal_menu.display_shift_menu(wb, wb_path)
+
 
 # Removes rows based on a column
 def remove_duplicate_rows(args):
@@ -204,7 +208,7 @@ def remove_duplicate_cols(args):
                 col_num += 1
 
         # Print how many rows were deleted in what sheets
-        if (dup_count > 0):
+        if dup_count > 0:
             duplicate_flag = 1
             print("Removed " + str(dup_count) + " duplicate rows from list.")
 
@@ -215,13 +219,16 @@ def remove_duplicate_cols(args):
         else:
             save_file(wb, wb_path, ".xlsx")
 
+
 # Returns user to top menu of this tool
 def exit_tool(wb):
     menu_header()
 
+
 # Returns user to main.py
 def go_main(wb):
     main.menu_header()
+
 
 # For test purposes, will execute header if being run as main
 if __name__ == '__main__':

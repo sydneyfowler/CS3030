@@ -27,11 +27,13 @@ ANALYSIS_OPTIONS_LIST = ["Sum", "Count", "Max", "Min", "Check Unique", "Average"
 NO_ANALYSIS = "No Analysis"
 BREAK_SHEET = "Finish Sheet"
 
+
 def menu_header():
     # Print Main Analysis Menu
     cleanup_main_menu = menus.Menu("analysis", menus.ANALYSIS_MENU_LIST, menus.ANALYSIS_MENU_ROUTE)
     cleanup_main_menu.print_menu_message()
     cleanup_main_menu.display_shift_menu()
+
 
 def init():
     # Get workbook

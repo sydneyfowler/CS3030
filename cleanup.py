@@ -46,11 +46,13 @@ DATA_TYPE_LIST = ["Whole Number", "Decimal Value", "Currency", "Text String", "D
 NO_CLEANING = "No Cleaning"
 BREAK_SHEET = "Finish Sheet"
 
+
 def menu_header():
     # Print Main Cleanup Menu
     cleanup_main_menu = menus.Menu("cleanup", menus.CLEANUP_MENU_LIST, menus.CLEANUP_MENU_ROUTE)
     cleanup_main_menu.print_menu_message()
     cleanup_main_menu.display_shift_menu()
+
 
 def init():
     # Get workbook
@@ -103,7 +105,7 @@ def init():
                 process_column(wb, sheet[col_letter], int(process_number))
 
     # Save new file
-    if (change_file_flag):
+    if change_file_flag:
         save_file(wb, wb_path, ".xlsx")
     else:
         print()
@@ -115,30 +117,30 @@ def init():
 
 
 # Processes column
-def process_column(wb, range, process_number):
+def process_column(wb, wb_range, process_number):
 
     if process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Phone Numbers"):
-        clean_phone_number(range)
+        clean_phone_number(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Email Addresses"):
-        clean_email_address(range)
+        clean_email_address(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup States"):
-        clean_states(range)
+        clean_states(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Zip Codes"):
-        clean_zip_codes(range)
+        clean_zip_codes(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Dates"):
-        clean_dates(range)
+        clean_dates(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Web Address"):
-        clean_web_addresses(range)
+        clean_web_addresses(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Produce List of Unique Entries"):
-        get_unique_entries(range, wb)
+        get_unique_entries(wb_range, wb)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Check Entries Against List"):
-        user_list = get_list(range[0].value)
-        check_entries_against_list(range, user_list)
+        user_list = get_list(wb_range[0].value)
+        check_entries_against_list(wb_range, user_list)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Truncate to Character Limit"):
-        limit = get_limit(range[0].value)
-        check_character_limit(range, limit)
+        limit = get_limit(wb_range[0].value)
+        check_character_limit(wb_range, limit)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Check Data Type"):
-        data_type = get_data_type(range[0].value)
+        data_type = get_data_type(wb_range[0].value)
         check_data_type(range, data_type)
 
 

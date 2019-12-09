@@ -28,13 +28,14 @@ def print_top_message():
     print("  IMPORTANT: This utility requires: os, openpyxl, pprint... (EDIT THIS)")
     print('-' * 70)
 
-    # Insturctions
+    # Instructions
     print("First, choose an option below that you want to perform.")
     print("  You can choose an option for a detailed description of each.")
     print("  The menus will guide you through the desired process you want to")
     print("  perform.")
     print('-' * 70)
     print()
+
 
 # Prints Import Information
 def print_file_in_message():
@@ -60,6 +61,7 @@ def print_file_in_message():
     print('-' * 70)
     print()
 
+
 # Prints Import Information
 def print_file_out_message():
 
@@ -81,6 +83,7 @@ def print_file_out_message():
     print("    (append, overwrite, or create new)")
     print('-' * 70)
     print()
+
 
 # Prints Import Information
 def print_share_message():
@@ -110,6 +113,7 @@ def print_share_message():
     print('-' * 70)
     print()
 
+
 # Prints Quit Message
 def print_quit_message():
 
@@ -135,7 +139,8 @@ def print_quit_message():
     print('-' * 70)
     print()
 
-# Prints Dluplicate Removal Message
+
+# Prints Duplicate Removal Message
 def print_duplicate_removal_message():
 
     # Header
@@ -159,6 +164,7 @@ def print_duplicate_removal_message():
     print("  3rd: Output file will be asked for.")
     print('-' * 70)
     print()
+
 
 # Prints Cleanup Message
 def print_cleanup_message():
@@ -186,6 +192,7 @@ def print_cleanup_message():
     print("  4th: Repeat at [2nd] step with other sheets.")
     print('-' * 70)
     print()
+
 
 # Prints Cleanup Message
 def print_analysis_message():
@@ -215,6 +222,7 @@ def print_analysis_message():
     print('-' * 70)
     print()
 
+
 # Prints Import Information
 def print_compress_message():
 
@@ -233,6 +241,7 @@ def print_compress_message():
     print("    File types accepted: any type")
     print('-' * 70)
     print()
+
 
 # Prints Quit Message
 def print_quit_message():

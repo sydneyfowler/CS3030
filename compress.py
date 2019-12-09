@@ -24,6 +24,7 @@ def menu_header():
     cleanup_main_menu.print_menu_message()
     cleanup_main_menu.display_shift_menu()
 
+
 def init():
 
     # Get path and determine zipfile name
@@ -62,6 +63,7 @@ def init():
 
     # Loop back to compress menu
     menu_header()
+
 
 # For test purposes, will execute header if being run as main
 if __name__ == '__main__':

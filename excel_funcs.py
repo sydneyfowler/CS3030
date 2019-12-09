@@ -23,7 +23,7 @@ def get_directory(type_array, message):
 
     # Initialize error flag
     error_found = 0
-    while (True):
+    while True:
 
         # Import path input
         file_path = input(message)
@@ -33,13 +33,13 @@ def get_directory(type_array, message):
             for type in type_array:
 
                 # Checks for correct file type
-                if ( (file_path[-len(type):] != type) ):
+                if file_path[-len(type):] != type:
                     error_found = 1
                 else:
                     error_found = 0
 
             # If incorrect file type, print error, loop.
-            if (error_found):
+            if error_found:
                 print("ERROR: Invalid file TYPE. Must be " + str(type_array))
                 print()
                 continue
@@ -75,6 +75,7 @@ def save_file(wb, wb_path, type):
     wb.save(save_path)
     print("Done! New file saved to " + save_path)
     input("Press enter to continue...")
+
 
 # Has user select sheet to perform actions on
 def get_sheet(wb):

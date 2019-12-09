@@ -67,7 +67,7 @@ month_word = re.compile(r'''(
                 (?P<year>(\d{2})?(\d{2}))                                       # Year
                 )''', re.VERBOSE)
 
-# Derived web adress from site in REFERENCES.
+# Derived web address from site in REFERENCES.
 web_address_regex = re.compile(r'''(
                 (http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?
                 [a-z0-9]+
