@@ -1,10 +1,12 @@
 '''
-Final Project
-Sydney Fowler and Matt Hileman
-15-12-2019
-Description: Contains large custom dictionaries needed for the project.
+custom_disctionaries.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
+Description: Contains large custom dictionaries needed for some tools.
 '''
 
+# ================ REFERENCES ================
+# (none)
 
 states_lookup = {
     "ALABAMA": "AL",

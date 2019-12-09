@@ -1,22 +1,26 @@
-"""
-Import (file_in)
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
+'''
+file_in.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
 Description: Converts a .csv to .xlsx
-"""
+'''
 
+# ================ REFERENCES ================
+# PANDAS - (NEED XLRD installed)
+
+# ================ IMPORTS ================
+# System
 import os
 import sys
-import pandas
 
+# Custom
 from excel_funcs import get_directory
 import menus
 
-
-# ================ REFERENCES ================
-# PANDAS - https://pandas.pydata.org/ (NEED XLRD)
+# Exterior
+import pandas
 
 # ================== SETUP ===================
-
 def menu_header():
 
     # Print Import Message Above

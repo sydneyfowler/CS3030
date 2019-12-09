@@ -1,13 +1,25 @@
-"""
-excel_funcs
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
-Description: will get a file and check for valid valid type and that the file exists.
-"""
-# Imports
+'''
+excel_funcs.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
+Description: Common excel related methods used throughout several tools.
+            Includes: get_directory, save_file, get_sheet
+'''
+
+# ================ IMPORTS ================
+# System
 import os
 
+# Custom
+import menus
+
+# ================ METHODS ================
 # Get file function, used in various tools
 def get_directory(type_array, message):
+
+    print()
+    print(" Input a file ".center(70, "="))
+    print('-' * 70)
 
     # Initialize error flag
     error_found = 0
@@ -50,7 +62,7 @@ def get_directory(type_array, message):
 def save_file(wb, wb_path, type):
 
     print()
-    print(" Enter a name for new save file".center(70, "="))
+    print(" Enter a name for new save file ".center(70, "="))
     print('-' * 70)
 
     # Removes original file name
@@ -68,7 +80,7 @@ def save_file(wb, wb_path, type):
 def get_sheet(wb):
 
     # Creates menu
-    sheets = wb.get_sheet_names()
+    sheets = wb.sheetnames      # Edited depreciated function: "wb.get_sheet_names()"
     sheet_menu = menus.Value_Menu("duplicate_removal", sheets, sheets)
     print()
     print(" Choose a sheet to remove duplicates ".center(70, "="))

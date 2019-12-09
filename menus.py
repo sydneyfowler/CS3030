@@ -1,23 +1,30 @@
-"""
-(Application Name)
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
-(Program Description)
-"""
-import os
-import importlib
-
-import menu_info
+'''
+menus.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
+Description: Menus object, used to create menus throughout program.
+'''
 
 # ================ REFERENCES ================
 # IMPORTLIB (needed import)
+
+# ================ IMPORTS ================
+# System
+import os
+
+# Custom
+import menu_info
+
+# Exterior
+import importlib
 
 # ================ NAVIGATIONAL CONSTANTS ================
 # List of all menus
 TOP_MENU_LIST = ["Analysis", "Cleanup", "Compress", "Duplicate Removal",
                     "Email", "Export", "Import", "Quit"]
-ANALYSIS_MENU_LIST = []
+ANALYSIS_MENU_LIST = ["Analyze new file", "Back to Main Menu", "Quit"]
 CLEANUP_MENU_LIST = ["Clean new file", "Back to Main Menu", "Quit"]
-COMPRESS_MENU_LIST = []
+COMPRESS_MENU_LIST = ["Compress new file", "Back to Main Menu", "Quit"]
 DUPLICATE_MENU_LIST = ["Remove duplicate from new file", "Back to Main Menu", "Quit"]
 EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu", "Quit"]
 EXPORT_MENU_LIST = ["Export new file", "Back to Main Menu", "Quit"]
@@ -25,12 +32,13 @@ IMPORT_MENU_LIST = ["Import new file", "Back to Main Menu", "Quit"]
 QUIT_LIST = ["Yes, quit the program", "No, return to main menu"]
 
 
-TOP_MENU_ROUTE = ["anaysis", "cleanup", "compress",
+# Routes that each list item will flow to (file name)
+TOP_MENU_ROUTE = ["analysis", "cleanup", "compress",
                     "duplicate_removal", "share",
                     "file_out", "file_in", "quit"]
-ANALYSIS_MENU_ROUTE = []
+ANALYSIS_MENU_ROUTE = ["analysis", "main", "quit"]
 CLEANUP_MENU_ROUTE = ["cleanup", "main", "quit"]
-COMPRESS_MENU_ROUTE = []
+COMPRESS_MENU_ROUTE = ["compress", "main", "quit"]
 DUPLICATE_MENU_ROUTE = ["duplicate_removal", "main", "quit"]
 EMAIL_MENU_ROUTE = ["share", "main", "quit"]
 EXPORT_MENU_ROUTE = ["file_out", "main", "quit"]
@@ -51,22 +59,22 @@ class Menu:
         self.selection_name = None
 
     # Prints menu options for user
-    def PrintMenuMessage(self):
+    def print_menu_message(self):
 
         # Display print message from the import menu_info
         getattr(menu_info, "print_" + self.name + "_message")()
 
     # Gives menu for shiting menus
-    def DisplayShiftMenu(self):
+    def display_shift_menu(self):
 
         # Prints menu list
-        self.PrintMenuList()
+        self.print_menu_list()
         # Gets selection from user, stores if valid
-        self.GetUserSelection()
+        self.get_user_selection()
         # Routes to new file
-        self.RouteMenu()
+        self.route_menu()
 
-    def PrintMenuList(self):
+    def print_menu_list(self):
         # Tells user to select option
         print("Select an option (" + str(self.min_option_value) + "-" + str(self.max_option_value) + ")")
         print('-' * 40)
@@ -76,7 +84,7 @@ class Menu:
 
 
     # Gets input for menu selection and validates
-    def GetUserSelection(self):
+    def get_user_selection(self):
 
         # Error checking loop - input is an integer and is a valid menu item
         while (True):
@@ -115,7 +123,7 @@ class Menu:
                 break
 
     # Directs user to respected file
-    def RouteMenu(self):
+    def route_menu(self):
 
         # Clears the screen (checks os and uses command for that system)
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -140,21 +148,21 @@ class Function_Menu(Menu):
         super().__init__(name, list, route)
 
     # Gives menu for shiting menus
-    def DisplayShiftMenu(self, *args):
+    def display_shift_menu(self, *args):
 
         # Prints menu list
-        self.PrintMenuList()
+        self.print_menu_list()
         # Gets selection from user, stores if valid
-        self.GetUserSelection()
+        self.get_user_selection()
         # Routes to new file
-        self.RouteMenu(args)
+        self.route_menu(args)
 
     # Prints menu options for user
-    def PrintMenuMessage(self):
+    def print_menu_message(self):
         pass
 
     # Directs user to respected file
-    def RouteMenu(self, args):
+    def route_menu(self, args):
 
         # Clears the screen (checks os and uses command for that system)
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -174,21 +182,21 @@ class Value_Menu(Menu):
         super().__init__(name, list, route)
 
     # Prints menu options for user
-    def PrintMenuMessage(self):
+    def print_menu_message(self):
         pass
 
     # Gives menu for shiting menus
-    def DisplayShiftMenu(self):
+    def display_shift_menu(self):
 
         # Prints menu list
-        self.PrintMenuList()
+        self.print_menu_list()
         # Gets selection from user, stores if valid
-        self.GetUserSelection()
+        self.get_user_selection()
         # Routes selection value
-        return self.RouteMenu()
+        return self.route_menu()
 
     # Directs user to respected file
-    def RouteMenu(self):
+    def route_menu(self):
 
         # Clears the screen (checks os and uses command for that system)
         os.system('cls' if os.name == 'nt' else 'clear')
