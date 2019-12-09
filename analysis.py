@@ -24,8 +24,8 @@ from openpyxl.styles import Alignment
 # ================== SETUP ===================
 # CONSTANTS
 ANALYSIS_OPTIONS_LIST = ["Sum", "Count", "Max", "Min", "Check Unique", "Average", "No Analysis", "Finish Sheet"]
-NO_ANALYSIS = "No Analysis"
-BREAK_SHEET = "Finish Sheet"
+NO_ANALYSIS = ANALYSIS_OPTIONS_LIST.index("No Analysis")
+BREAK_SHEET = ANALYSIS_OPTIONS_LIST.index("Finish Sheet")
 
 
 def menu_header():
@@ -65,7 +65,7 @@ def init():
             print('-' * 40)
             print("SHEET: " + str(sheet_name))
             print("HEADER: " + str(header))
-            user_selection = cleanup_menu.display_shift_menu()
+            user_selection = ANALYSIS_OPTIONS_LIST.index(cleanup_menu.display_shift_menu())
 
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
@@ -90,7 +90,7 @@ def init():
         save_file(wb, wb_path, ".xlsx")
     else:
         print()
-        print("File not changed, no need to save new vesion.")
+        print("File not changed, no need to save new version.")
         input("Press enter to continue...")
 
     # Loop back to top menu
@@ -241,9 +241,9 @@ def perform_unique(sheet_name, wb_range):
             continue
         # Perform op
         if cell.value:
-            if cell.value.lower() in entries:
+            if str(cell.value).lower() in entries:
                 return "False"
-            entries.append(cell.value.lower())
+            entries.append(str(cell.value).lower())
 
     return "True"
 

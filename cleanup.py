@@ -109,7 +109,7 @@ def init():
         save_file(wb, wb_path, ".xlsx")
     else:
         print()
-        print("File not changed, no need to save new vesion.")
+        print("File not changed, no need to save new version.")
         input("Press enter to continue...")
 
     # Loop back to top menu
