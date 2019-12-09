@@ -1,8 +1,15 @@
-"""
-(Application Name)
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
-(Program Description)
-"""
+'''
+menu_info.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
+Description: Headers that are displayed at the start of each tool.
+'''
+
+# ================ REFERENCES ================
+# (none)
+
+# ================ IMPORTS ================
+# Custom
 import main
 import menus
 
@@ -147,9 +154,83 @@ def print_duplicate_removal_message():
     print("  1st: Give the file you wish to remove duplicates (absolute or relative path).")
     print("    File types accepted: .xlsx")
     print()
-    print("  2nd: Choose to cleanup rows, columns, a column, or row to remove duplicates.")
+    print("  2nd: Choose to cleanup an entire file, by column, or by row to remove duplicates.")
     print()
-    print("  3rd: Output file will automatically save.")
+    print("  3rd: Output file will be asked for.")
+    print('-' * 70)
+    print()
+
+# Prints Cleanup Message
+def print_cleanup_message():
+
+    # Header
+    print()
+    print(" CLEANUP TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("Allows the user to select a set of cleanup rules for each column in")
+    print("  their file and applies said cleanupto a new version of the file.")
+    print()
+    print("  You will need: an excel file and path to that excel file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file you wish to cleanlup (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2nd: Choose if you'd like to cleanup the sheet stated.")
+    print()
+    print("  3rd: Choose what you'd like done to each header.")
+    print()
+    print("  4th: Repeat at [2nd] step with other sheets.")
+    print('-' * 70)
+    print()
+
+# Prints Cleanup Message
+def print_analysis_message():
+
+    # Header
+    print()
+    print(" ANALYSIS TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("Allows the user to select from a set of analysis options for each column")
+    print("  in their file. For each sheet selected, a new analysis sheet is")
+    print("  created with the results from each analyzed column.")
+    print()
+    print("  You will need: an excel file and path to that excel file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file you wish to analyze (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print()
+    print("  2nd: Choose if you'd like to analyze the sheet stated.")
+    print()
+    print("  3rd: Choose what you'd like done to each header.")
+    print()
+    print("  4th: Repeat at [2nd] step with other sheets.")
+    print('-' * 70)
+    print()
+
+# Prints Import Information
+def print_compress_message():
+
+    # Header
+    print()
+    print(" COMPRESSION TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The compress tool will allow you to select a file and compress it")
+    print("  in to an zip file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file to export (absolute or relative path).")
+    print("    File types accepted: any type")
     print('-' * 70)
     print()
 

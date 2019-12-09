@@ -1,13 +1,28 @@
 '''
-Final Project
-Sydney Fowler and Matt Hileman
-15-12-2019
+share.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
 Description: Emails a copy of the passed in file to a list of email addresses
 '''
-# Imports
+
+# ================ REFERENCES ================
+# Sending email attachments: https://www.tutorialspoint.com/send-mail-with-attachment-from-your-gmail-account-using-python
+# Sending Excel attachments: https://stackoverflow.com/questions/25346001/add-excel-file-attachment-when-sending-python-email
+# Rules for email_regex: https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
+
+# ================ IMPORTS ================
+# System
 import os
 import sys
 import re
+
+# Custom
+import menus
+from excel_funcs import get_directory
+from excel_funcs import save_file
+from excel_funcs import get_sheet
+
+# Exterior
 import smtplib
 from getpass import getpass
 from email.mime.multipart import MIMEMultipart
@@ -15,17 +30,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-import menus
-
-
-# ================ REFERENCES ================
-# Sending email attachments: https://www.tutorialspoint.com/send-mail-with-attachment-from-your-gmail-account-using-python
-# Sending Excel attachments: https://stackoverflow.com/questions/25346001/add-excel-file-attachment-when-sending-python-email
-# Rules for email_regex: https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
-
-
 # ================== SETUP ===================
-
 email_regex = re.compile(r'''(
 ([a-zA-Z0-9](([a-zA-Z0-9!#$%&'*+/=?^_`{|.-]){,62}[a-zA-Z0-9])?)     # Recipient name
 (@)                                                                 # @ symbol
@@ -38,15 +43,12 @@ email_regex = re.compile(r'''(
 def menu_header():
     # Menu Object
     share_menu = menus.Menu("share", menus.EMAIL_MENU_LIST, menus.EMAIL_MENU_ROUTE)
-    # Menu Message
     share_menu.PrintMenuMessage()
-    # Shift Menu
     share_menu.DisplayShiftMenu()
 
 def init():
-
-    # Get user input
-    wb_path = get_wb_path()
+    # Get user input\
+    wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
     email_list = get_email_list()
     sender_email = input("Enter your email address (supports gmail, outlook, hotmail, and yahoo): ")
     password = getpass("Enter your email password: ")
@@ -112,26 +114,8 @@ def init():
 
     input("Press enter to continue...")
 
-    # Display Menu Header again
+    # Display Menu Header loop
     menu_header()
-
-
-def get_wb_path():
-    while (True):  # Loop until you get a valid Excel file
-        wb_path = input("Type path of your Excel file: ")
-        if os.path.exists(wb_path):
-            if wb_path[-5:] != ".xlsx":
-                print("ERROR: Must be a .xlsx file.")
-                print()
-            else:
-                print('-' * 40)
-                print()
-                break
-        else:
-            print("ERROR: Invalid file path.")
-            print()
-
-    return wb_path
 
 
 def get_email_list():

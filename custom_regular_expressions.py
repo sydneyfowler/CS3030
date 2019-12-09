@@ -1,12 +1,19 @@
 '''
-Final Project
-Sydney Fowler and Matt Hileman
-15-12-2019
-Description: Contains all regular expressions needed for the project.
+custom_regular_expressions.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
+Description: Contains all regular expressions needed for some tools.
 '''
 
+# ================ REFERENCES ================
+# Email rules derived from: https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
+# Web adress derived from: https://www.regextester.com/93652
+
+# ================ IMPORTS ================
+# System
 import re
 
+# ================== REGULAR EXPRESSION ===================
 strip_none_digits = re.compile(r'(\d+)')
 
 remove_special_characters = re.compile(r'''[,.:;=?!"*%<>\-_(){}[\]\\]''')
@@ -20,8 +27,7 @@ phone_regex = re.compile(r'''(
                 (\s*(ext|x|ext.)\s*(?P<ext>\d{2,5}))?                                   # Extension
                 )''', re.VERBOSE)
 
-# Based email rules of information on this site:
-# https://help.returnpath.com/hc/en-us/articles/220560587-What-are-the-rules-for-email-address-syntax-
+# Derived email rules from site in REFERENCES.
 email_regex = re.compile(r'''(
                 ([a-zA-Z0-9](([a-zA-Z0-9!#$%&'*+/=?^_`{|.-]){,62}[a-zA-Z0-9])?)     # Recipient name
                 (@)                                                                 # @ symbol
@@ -61,7 +67,7 @@ month_word = re.compile(r'''(
                 (?P<year>(\d{2})?(\d{2}))                                       # Year
                 )''', re.VERBOSE)
 
-# Reference: https://www.regextester.com/93652
+# Derived web adress from site in REFERENCES.
 web_address_regex = re.compile(r'''(
                 (http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?
                 [a-z0-9]+

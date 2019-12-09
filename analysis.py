@@ -1,28 +1,43 @@
 '''
-Final Project
-Sydney Fowler and Matt Hileman
-15-12-2019
+analysis.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
 Description: Allows the user to select from a set of analysis options for each column in their file. For each sheet
 selected, a new analysis sheet is created with the results from each analyzed column.
 '''
 
+# ================ REFERENCES ================
+# OPENPYXL (needed import)
+
+# ================ IMPORTS ================
+# Custom
+from excel_funcs import get_directory
+from excel_funcs import save_file
+import menus
+
+# Exterior
 import openpyxl
-from cleanup import get_user_selection
-from cleanup import print_menu
-from share import get_wb_path
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
 from openpyxl.styles import Alignment
 
+# ================== SETUP ===================
+# CONSTANTS
 ANALYSIS_OPTIONS_LIST = ["Sum", "Count", "Max", "Min", "Check Unique", "Average", "No Analysis", "Finish Sheet"]
-NO_ANALYSIS = ANALYSIS_OPTIONS_LIST.index("No Analysis")
-BREAK_SHEET = ANALYSIS_OPTIONS_LIST.index("Finish Sheet")
+NO_ANALYSIS = "No Analysis"
+BREAK_SHEET = "Finish Sheet"
 
+def menu_header():
+    # Print Main Analysis Menu
+    cleanup_main_menu = menus.Menu("analysis", menus.ANALYSIS_MENU_LIST, menus.ANALYSIS_MENU_ROUTE)
+    cleanup_main_menu.print_menu_message()
+    cleanup_main_menu.display_shift_menu()
 
 def init():
-    wb_path = get_wb_path()
+    # Get workbook
+    wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
     wb = openpyxl.load_workbook(wb_path)
-    sheets = wb.get_sheet_names()
+    sheets = wb.sheetnames      # Edited depreciated function: "wb.get_sheet_names()"
 
     # Initialize 2D dictionary representing each sheet and its column headers
     sheet_header_lookup = {}
@@ -32,36 +47,52 @@ def init():
         for cell in sheet[1]:
             sheet_header_lookup[sheet_name].setdefault(cell.value, None)
 
-    # Get user selections
+    # Get user selections for each sheet
     for sheet_name in sheets:
+
         # Check if user wants to process this sheet
         analyze_sheet = input("Would you like to analyze sheet " + sheet_name + "? (y/n) ")
         if analyze_sheet not in ("yes", "Yes", "Y", "y"):
             continue
 
+        # Menu object used below
+        cleanup_menu = menus.Value_Menu("cleanup", ANALYSIS_OPTIONS_LIST, ANALYSIS_OPTIONS_LIST)
+
         # Get user selections for each header in sheet
         for header in sheet_header_lookup[sheet_name]:
-            print_menu(sheet_name, header, ANALYSIS_OPTIONS_LIST)
-            user_selection = get_user_selection(ANALYSIS_OPTIONS_LIST)
+            print('-' * 40)
+            print("SHEET: " + str(sheet_name))
+            print("HEADER: " + str(header))
+            user_selection = cleanup_menu.display_shift_menu()
+
             if user_selection == BREAK_SHEET:       # Check if user wants to break out of sheet
                 break
-            elif user_selection == NO_ANALYSIS:     # Check if user wants to skip this column
+            elif user_selection == NO_CLEANING:     # Check if user wants to skip this column
                 continue
             else:
                 sheet_header_lookup[sheet_name][header] = user_selection
 
     # Analyze data
+    change_file_flag = 0
     for sheet_name in sheets:
         sheet = wb.get_sheet_by_name(sheet_name)
         for col in range(1, sheet.max_column + 1):
             analysis_number = sheet_header_lookup[sheet_name][sheet.cell(row=1, column=col).value]
             if analysis_number is not None:
+                change_file_flag = 1
                 col_letter = get_column_letter(col)
                 perform_analysis(wb, sheet_name, sheet[col_letter], int(analysis_number))
 
-    # Save to a new copy of the workbook
-    new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
-    wb.save(new_file)
+    # Save new file
+    if (change_file_flag):
+        save_file(wb, wb_path, ".xlsx")
+    else:
+        print()
+        print("File not changed, no need to save new vesion.")
+        input("Press enter to continue...")
+
+    # Loop back to top menu
+    menu_header()
 
 
 def perform_analysis(wb, sheet_name, wb_range, analysis_number):
@@ -240,3 +271,8 @@ def perform_average(sheet_name, wb_range):
         return 0
     else:
         return str(round(init_sum / init_count, 2))
+
+
+# For test purposes, will execute header if being run as main
+if __name__ == '__main__':
+    menu_header()

@@ -1,19 +1,26 @@
-"""
-Output (file_out)
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
+'''
+file_out.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
 Description: Converts a .xlsx to .csv
-"""
-
-import pandas
-from excel_funcs import get_directory
-import menus
-
+'''
 
 # ================ REFERENCES ================
 # PANDAS - (NEED XLRD installed)
 
-# ================== SETUP ===================
+# ================ IMPORTS ================
+# System
+import os
+import sys
 
+# Custom
+from excel_funcs import get_directory
+import menus
+
+# Exterior
+import pandas
+
+# ================== SETUP ===================
 def menu_header():
 
     # Print Import Message Above

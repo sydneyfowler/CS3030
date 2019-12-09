@@ -1,17 +1,24 @@
-"""
-Duplicate Removal Tool (duplicate_removal)
-Created by: Matthew Hileman & Sidney Fowler, 20 November 2019
+'''
+duplicate_removal.py (Excel Command Line Tool)
+Sydney Fowler and Matthew Hileman
+15 December 2019
 Description: Removes duplicates from rows, columns, or entire sheets.
-"""
+'''
+
+# ================ IMPORTS ================
+# System
 import os
 import sys
-import openpyxl
 
+# Custom
 from excel_funcs import get_directory
 from excel_funcs import save_file
 from excel_funcs import get_sheet
 import menus
 import main
+
+# Exterior
+import openpyxl
 
 # ================ REFERENCES ================
 # OPENPYXL - needed import
@@ -21,22 +28,17 @@ def menu_header():
 
     # Print Import Message Above
     duplicate_main_menu = menus.Menu("duplicate_removal", menus.DUPLICATE_MENU_LIST, menus.DUPLICATE_MENU_ROUTE)
-    duplicate_main_menu.PrintMenuMessage()
-    duplicate_main_menu.DisplayShiftMenu()
+    duplicate_main_menu.print_menu_message()
+    duplicate_main_menu.display_shift_menu()
 
-# Main
 def init():
 
-    # Get input for excel file
+    # Get user input for excel file
     wb_path = get_directory([".xlsx"], "Type path of your excel file (.xlsx): ")
-
-    # Workbook and sheets object
     wb = openpyxl.load_workbook(wb_path)
 
-    # Asks user if they want to remove duplicates from all sheets
-    # Chooses respective function based on result
-
-    if (len(wb.get_sheet_names()) > 1):
+    # Gets input from user if they want to remove duplicates from all sheets
+    if (len(wb.sheetnames) > 1):      # Edited depreciated function: "wb.get_sheet_names()"
         user_choice = input ("Would you like to remove duplicates from all sheets (Y) or one sheet (N)?: ")
         if user_choice in ("yes", "Yes", "Y", "y"):
             remove_duplicate_all_sheet(wb, wb_path)
@@ -53,7 +55,7 @@ def init():
 def remove_duplicate_all_sheet(wb, wb_path):
     print("Removing duplicate rows from all sheets...")
 
-    sheets = wb.get_sheet_names()
+    sheets = wb.sheetnames      # Edited depreciated function: "wb.get_sheet_names()"
 
     # Iterate over each sheet
     for item in sheets:
@@ -107,7 +109,7 @@ def single_sheet(wb, wb_path):
 
     # Removal menu, select to remove by a certain row or column
     removal_menu = menus.Function_Menu("duplicate_removal", REMOVAL_MENU_LIST, REMOVAL_MENU_ROUTE)
-    removal_menu.DisplayShiftMenu(wb, wb_path)
+    removal_menu.display_shift_menu(wb, wb_path)
 
 # Removes rows based on a column
 def remove_duplicate_rows(args):
@@ -125,7 +127,7 @@ def remove_duplicate_rows(args):
     print('-' * 70)
 
     # Which col to compare
-    removal_index = row_menu.DisplayShiftMenu()
+    removal_index = row_menu.display_shift_menu()
 
     # Initialize rows list, duplicate list, row index
     rows_list = []
@@ -163,6 +165,7 @@ def remove_duplicate_rows(args):
 
 # Removes columns based on a row
 def remove_duplicate_cols(args):
+
         wb = args[0]
         wb_path = args[1]
         sheet = get_sheet(wb)
@@ -177,7 +180,7 @@ def remove_duplicate_cols(args):
         print('-' * 70)
 
         # Which col to compare
-        removal_index = col_menu.DisplayShiftMenu()
+        removal_index = col_menu.display_shift_menu()
 
         # Initialize col list, duplicate list, col index
         cols_list = []
