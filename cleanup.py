@@ -146,7 +146,7 @@ def get_user_selection(l):
             return user_choice
 
 
-def process_column(wb, range, process_number):
+def process_column(wb, wb_range, process_number):
     if process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Phone Numbers"):
         clean_phone_number(wb_range)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Cleanup Email Addresses"):
@@ -169,7 +169,7 @@ def process_column(wb, range, process_number):
         check_character_limit(wb_range, limit)
     elif process_number == CLEANUP_OPTIONS_LIST.index("Check Data Type"):
         data_type = get_data_type(wb_range[0].value)
-        check_data_type(range, data_type)
+        check_data_type(wb_range, data_type)
 
 
 def get_list(header):
