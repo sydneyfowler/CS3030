@@ -9,9 +9,6 @@ Description: Removes duplicate data from rows, columns, or entire sheets.
 # OPENPYXL - needed import
 
 # ================ IMPORTS ================
-# System
-import os
-import sys
 
 # Custom
 from excel_funcs import get_directory

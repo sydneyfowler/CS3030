@@ -19,8 +19,6 @@ import re
 # Custom
 import menus
 from excel_funcs import get_directory
-from excel_funcs import save_file
-from excel_funcs import get_sheet
 
 # Exterior
 import smtplib

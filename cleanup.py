@@ -27,7 +27,6 @@ from custom_regular_expressions import web_address_regex
 
 import custom_dictionaries
 from excel_funcs import get_directory
-from excel_funcs import save_file
 import menus
 
 # Exterior

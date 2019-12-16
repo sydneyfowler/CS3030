@@ -11,7 +11,6 @@ Description: Converts a .xlsx to .csv
 # ================ IMPORTS ================
 # System
 import os
-import sys
 
 # Custom
 from excel_funcs import get_directory
