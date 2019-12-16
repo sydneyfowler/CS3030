@@ -30,6 +30,7 @@ EMAIL_MENU_LIST = ["Send an excel file via email", "Back to Main Menu", "Quit"]
 EXPORT_MENU_LIST = ["Export new file", "Back to Main Menu", "Quit"]
 IMPORT_MENU_LIST = ["Import new file", "Back to Main Menu", "Quit"]
 QUIT_LIST = ["Yes, quit the program", "No, return to main menu"]
+GRAPH_LIST = ["Create new graph", "Back to Main Menu", "Quit"]
 
 
 # Routes that each list item will flow to (file name)
@@ -44,6 +45,7 @@ EMAIL_MENU_ROUTE = ["share", "main", "quit"]
 EXPORT_MENU_ROUTE = ["file_out", "main", "quit"]
 IMPORT_MENU_ROUTE = ["file_in", "main", "quit"]
 QUIT_ROUTE = ["quit", "main"]
+GRAPH_ROUTE = ["graph", "main", "quit"]
 
 # ================ MENU OBJECT ================
 class Menu:
