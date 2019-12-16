@@ -88,5 +88,5 @@ def get_sheet(wb):
     print('-' * 70)
 
     # User selects sheet to use, returns that sheet
-    sheet = wb.get_sheet_by_name(sheet_menu.DisplayShiftMenu())
+    sheet = wb.get_sheet_by_name(sheet_menu.display_shift_menu())
     return sheet

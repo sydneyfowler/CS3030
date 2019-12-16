@@ -11,6 +11,7 @@ Description: Converts a .csv to .xlsx
 # ================ IMPORTS ================
 # System
 import os
+import sys
 
 # Custom
 from excel_funcs import get_directory
@@ -24,9 +25,8 @@ def menu_header():
 
     # Print Import Message Above
     import_menu = menus.Menu("file_in", menus.IMPORT_MENU_LIST, menus.IMPORT_MENU_ROUTE)
-    import_menu.PrintMenuMessage()
-    import_menu.DisplayShiftMenu()
-
+    import_menu.print_menu_message()
+    import_menu.display_shift_menu()
 
 def init():
 
