@@ -242,6 +242,24 @@ def print_compress_message():
     print('-' * 70)
     print()
 
+def print_graph_message():
+
+    # Header
+    print()
+    print(" GRAPHING TOOL ".center(70, "="))
+    print('-' * 70)
+
+    # Description
+    print("The graphing tool will allow you to select a set of data and graph it")
+    print("  in an excel file.")
+    print('-' * 70)
+
+    # Instructions
+    print("  1st: Give the file to export (absolute or relative path).")
+    print("    File types accepted: .xlsx")
+    print('-' * 70)
+    print()
+
 
 # Prints Quit Message
 def print_quit_message():
