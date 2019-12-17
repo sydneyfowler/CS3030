@@ -45,7 +45,7 @@ You will notice a file directory named "test_files." Here there are files that h
 
 ### Importing a file
 
-When asked for a file, an relative path is all you need to enter. Make sure you include the file type!
+When asked for a file, a relative path is all you need to enter. Make sure you include the file type!
 
 ```
 test_files/example.xlsx
