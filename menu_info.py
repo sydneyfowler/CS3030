@@ -19,7 +19,7 @@ def print_top_message():
 
     # Header/titles
     print()
-    print(" Welcome to [Program Name]! ".center(70, "="))
+    print(" Welcome to the Excel Command Line Tool! ".center(70, "="))
     print('-' * 70)
 
     # Purpose statement, requirements
