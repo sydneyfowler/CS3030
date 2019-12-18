@@ -66,7 +66,7 @@ def remove_duplicate_all_sheet(wb, wb_path):
         rows_list = []
         dup_count = 0
         row_num = 1
-        duplicate_flag = 0
+        duplicate_flag = False
 
         # Iterate over each row
         for row in sheet.iter_rows(min_row = row_num):
@@ -86,8 +86,8 @@ def remove_duplicate_all_sheet(wb, wb_path):
                 row_num += 1
 
         # Print how many rows were deleted in what sheets
-        if (dup_count > 0):
-            duplicate_flag = 1
+        if dup_count > 0:
+            duplicate_flag = True
             print("Removed " + str(dup_count) + " duplicate rows from " + item)
 
     # Return for change_file_flag in init()
@@ -134,7 +134,7 @@ def remove_duplicate_rows(args):
     rows_list = []
     dup_count = 0
     row_num = 1
-    duplicate_flag = 0
+    duplicate_flag = False
 
     # Iterate over each row
     for row in sheet.iter_rows(min_row = row_num):
@@ -153,7 +153,7 @@ def remove_duplicate_rows(args):
 
     # Print how many rows were deleted in what sheets
     if (dup_count > 0):
-        duplicate_flag = 1
+        duplicate_flag = True
         print("Removed " + str(dup_count) + " duplicate rows from list.")
 
     # Return for change_file_flag in init()
@@ -187,7 +187,7 @@ def remove_duplicate_cols(args):
         cols_list = []
         dup_count = 0
         col_num = 1
-        duplicate_flag = 0
+        duplicate_flag = False
 
         # Iterate over each col
         for col in sheet.iter_cols(min_col = col_num):
@@ -206,7 +206,7 @@ def remove_duplicate_cols(args):
 
         # Print how many rows were deleted in what sheets
         if dup_count > 0:
-            duplicate_flag = 1
+            duplicate_flag = True
             print("Removed " + str(dup_count) + " duplicate rows from list.")
 
         # Return for change_file_flag in init()
