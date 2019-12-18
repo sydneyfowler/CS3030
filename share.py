@@ -41,8 +41,8 @@ email_regex = re.compile(r'''(
 def menu_header():
     # Menu Object
     share_menu = menus.Menu("share", menus.EMAIL_MENU_LIST, menus.EMAIL_MENU_ROUTE)
-    share_menu.PrintMenuMessage()
-    share_menu.DisplayShiftMenu()
+    share_menu.print_menu_message()
+    share_menu.display_shift_menu()
 
 
 def init():
@@ -66,7 +66,11 @@ def init():
     except Exception:
         print()
         print("ERROR: Unable to login to your email account")
-        sys.exit()
+
+        input("Press enter to continue...")
+
+        # Display Menu Header loop
+        menu_header()
 
     invalid_emails = []
     message_content = "Hello,\n\n" + sender_email + " has shared this file with you.\n\n"
