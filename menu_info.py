@@ -176,13 +176,13 @@ def print_cleanup_message():
 
     # Description
     print("Allows the user to select a set of cleanup rules for each column in")
-    print("  their file and applies said cleanupto a new version of the file.")
+    print("  their file and applies said cleanup to a new version of the file.")
     print()
     print("  You will need: an excel file and path to that excel file.")
     print('-' * 70)
 
     # Instructions
-    print("  1st: Give the file you wish to cleanlup (absolute or relative path).")
+    print("  1st: Give the file you wish to clean up (absolute or relative path).")
     print("    File types accepted: .xlsx")
     print()
     print("  2nd: Choose if you'd like to cleanup the sheet stated.")
