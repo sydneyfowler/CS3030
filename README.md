@@ -22,6 +22,7 @@ In order for the tool to work properly with all functions, you will the followin
 	pandas
 	matplotlib
 	numpy
+	xlrd
 
 ### Installing
 

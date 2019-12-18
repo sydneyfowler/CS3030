@@ -25,7 +25,7 @@ def print_top_message():
     # Purpose statement, requirements
     print("The purpose of this utility program is to provide an easy method to")
     print("  work with excel files using python.")
-    print("  IMPORTANT: This utility requires: os, openpyxl, pprint... (EDIT THIS)")
+    print("  IMPORTANT: This utility requires: openpyxl, pandas, matplotlib, numpy, xlrd")
     print('-' * 70)
 
     # Instructions
