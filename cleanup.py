@@ -97,6 +97,12 @@ def init():
     # Save to a new copy of the workbook
     new_file = wb_path[:len(wb_path) - 5] + "_EDITED.xlsx"
     wb.save(new_file)
+    print("Done! New file saved to " + new_file)
+
+    input("Press enter to continue...")
+
+    # Display Menu Header loop
+    menu_header()
 
 
 def print_menu(sheet_name, header, l):

@@ -81,7 +81,13 @@ def init():
     plt.plot(x, y, "ob")
     plt.xlabel(sheet.cell(column=headers.index(x_axis) + 1, row=1).value)
     plt.ylabel(sheet.cell(column=headers.index(y_axis) + 1, row=1).value)
+    print("Plotting graph...")
     plt.show()
+
+    input("Press enter to continue...")
+
+    # Display Menu Header loop
+    menu_header()
 
 
 # For test purposes, will execute header if being run as main
